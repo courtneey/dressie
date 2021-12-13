@@ -4,7 +4,7 @@ import { Text, Button } from "react-native-paper";
 import { auth } from "../../firebase/config";
 import { signOut } from "@firebase/auth";
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
   const logout = async () => {
     try {
       await signOut(auth);

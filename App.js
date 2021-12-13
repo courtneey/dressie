@@ -10,6 +10,7 @@ import { auth, db } from "./src/firebase/config";
 import { collection, onSnapshot, doc, getDoc } from "@firebase/firestore";
 
 import { LogBox } from "react-native";
+import Loading from "./src/screens/Loading";
 
 LogBox.ignoreLogs(["Warning:..."]);
 
@@ -17,8 +18,10 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(async () => {
+    setLoading(true);
     let userData;
     // listen to users collection for new users
     onSnapshot(collection(db, "users"), (snapshot) => {
@@ -41,7 +44,23 @@ export default function App() {
         }
       });
     });
+    setLoading(false);
   }, []);
+
+  let screen;
+  if (loading) {
+    screen = <Stack.Screen name="Loading" component={Loading} />;
+  }
+  if (user) {
+    screen = <Stack.Screen name="Home" component={HomeScreen} />;
+  } else {
+    screen = (
+      <>
+        <Stack.Screen name="Sign Up" component={SignupScreen} />
+        <Stack.Screen name="Log In" component={LoginScreen} />
+      </>
+    );
+  }
 
   return (
     <NavigationContainer>
@@ -55,14 +74,7 @@ export default function App() {
             headerTitleAlign: "center",
           }}
         >
-          {user ? (
-            <Stack.Screen name="Home" component={HomeScreen} />
-          ) : (
-            <>
-              <Stack.Screen name="Sign Up" component={SignupScreen} />
-              <Stack.Screen name="Log In" component={LoginScreen} />
-            </>
-          )}
+          {screen}
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>
