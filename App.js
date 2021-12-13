@@ -8,11 +8,13 @@ import theme from "./src/Styles/PaperTheme";
 import { onAuthStateChanged } from "@firebase/auth";
 import { auth, db } from "./src/firebase/config";
 import { collection, onSnapshot, doc, getDoc } from "@firebase/firestore";
-
 import { LogBox } from "react-native";
 import Loading from "./src/screens/Loading";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import LogOut from "./Logout";
 
-LogBox.ignoreLogs(["Warning:..."]);
+LogBox.ignoreAllLogs();
 
 const Stack = createStackNavigator();
 
@@ -47,17 +49,29 @@ export default function App() {
     setLoading(false);
   }, []);
 
-  let screen;
+  const Tab = createBottomTabNavigator();
+
+  let navOptions;
   if (loading) {
-    screen = <Stack.Screen name="Loading" component={Loading} />;
+    navOptions = <Tab.Screen name="Loading" component={Loading} />;
   }
   if (user) {
-    screen = <Stack.Screen name="Home" component={HomeScreen} />;
-  } else {
-    screen = (
+    navOptions = (
       <>
-        <Stack.Screen name="Sign Up" component={SignupScreen} />
-        <Stack.Screen name="Log In" component={LoginScreen} />
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            headerRight: () => LogOut(),
+          }}
+        />
+      </>
+    );
+  } else {
+    navOptions = (
+      <>
+        <Tab.Screen name="Sign Up" component={SignupScreen} />
+        <Tab.Screen name="Log In" component={LoginScreen} />
       </>
     );
   }
@@ -65,17 +79,33 @@ export default function App() {
   return (
     <NavigationContainer>
       <PaperProvider theme={theme}>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: "#A5668B",
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+
+              if (route.name === "Log In") {
+                iconName = focused ? "log-in" : "log-in-outline";
+              } else if (route.name === "Sign Up") {
+                iconName = focused ? "clipboard" : "clipboard-outline";
+              } else if (route.name === "Home") {
+                iconName = focused ? "home" : "home-outline";
+              } else if (route.name === "Log Out") {
+                iconName = focused ? "log-out" : "log-out-outline";
+              }
+
+              return <Ionicons name={iconName} size={size} color={color} />;
             },
-            headerTintColor: "#FFFFFF",
-            headerTitleAlign: "center",
-          }}
+            tabBarActiveTintColor: "#A5668B",
+            tabBarInactiveTintColor: "gray",
+            headerTitleAlign: "left",
+            headerTitleStyle: {
+              fontSize: 18,
+            },
+          })}
         >
-          {screen}
-        </Stack.Navigator>
+          {navOptions}
+        </Tab.Navigator>
       </PaperProvider>
     </NavigationContainer>
   );
