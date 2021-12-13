@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
+import { auth, db } from "../../firebase/config";
+import { signInWithEmailAndPassword } from "@firebase/auth";
+import { collection, getDocs } from "@firebase/firestore";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -10,7 +13,22 @@ export default function LoginScreen({ navigation }) {
     navigation.navigate("Sign Up");
   };
 
-  const onLoginPress = () => {};
+  const onLoginPress = async () => {
+    try {
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      const userData = await getDocs(collection(db, "users"));
+      const usersArr = userData.docs.map((doc) => ({ ...doc.data() }));
+      const correctUser = usersArr.find((doc) => doc.uid === user.user.uid);
+
+      if (correctUser) {
+        navigation.navigate("Home");
+      } else {
+        alert("Invalid email or password.");
+      }
+    } catch (err) {
+      console.log("There was an issue with logging in: ", err);
+    }
+  };
 
   return (
     <View
@@ -34,6 +52,7 @@ export default function LoginScreen({ navigation }) {
 
       <TextInput
         mode="outlined"
+        secureTextEntry
         placeholder="Password"
         placeholderTextColor="#aaaaaa"
         onChangeText={(text) => setPassword(text)}
