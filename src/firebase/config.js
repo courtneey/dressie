@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
-import * as firebase from "firebase";
 import "@firebase/auth";
 import "@firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 import secrets from "../../secrets";
 
 const firebaseConfig = {
@@ -13,9 +14,7 @@ const firebaseConfig = {
   appId: secrets.APP_ID,
 };
 
-// Initialize Firebase
-if (!firebaseConfig.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+const app = initializeApp(firebaseConfig);
 
-export { firebase };
+export const auth = getAuth(app);
+export const db = getFirestore(app);
