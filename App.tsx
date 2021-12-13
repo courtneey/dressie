@@ -1,21 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import 'react-native-gesture-handler';
+import React, {useState} from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { SignupScreen, LoginScreen, HomeScreen } from './src/screens';
+import { Provider as PaperProvider } from 'react-native-paper';
+import theme from './src/Styles/PaperTheme';
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const [user, setUser] = useState(null);
+
+  return (
+  <NavigationContainer>
+    <PaperProvider theme={theme}>
+    <Stack.Navigator screenOptions={{
+      headerStyle: {
+        backgroundColor: '#A5668B',
+      },
+      headerTintColor: '#FFFFFF',
+      headerTitleAlign: 'center'
+    }}>
+
+      { user ? (
+          <Stack.Screen name="Home" component={HomeScreen}/>
+        ) : (
+          <>
+          <Stack.Screen name="Sign Up" component={SignupScreen}/>
+          <Stack.Screen name="Log In" component={LoginScreen}/>
+          </>
+        ) }
+
+    </Stack.Navigator>
+    </PaperProvider>
+  </NavigationContainer>
+  )
+
+}
