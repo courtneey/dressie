@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Text, TextInput, Button } from "react-native-paper";
 import { View } from "react-native";
+import { db, auth } from "../../firebase/config";
+import { createUserWithEmailAndPassword } from "@firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
 
 export default function SignupScreen({ navigation }) {
   const [name, setName] = useState("");
@@ -12,7 +15,34 @@ export default function SignupScreen({ navigation }) {
     navigation.navigate("Log In");
   };
 
-  const onSignupPress = () => {};
+  const onSignupPress = async () => {
+    if (password !== confirmPassword) {
+      alert("Passwords don't match.");
+      return;
+    }
+
+    try {
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      const uid = response.user.uid;
+
+      const userData = {
+        uid,
+        name,
+        email,
+        password,
+      };
+
+      addDoc(collection(db, "users"), userData);
+      console.log("Sucessfully added to users collection.");
+    } catch (err) {
+      console.log("There was an issue with adding a user: ", err);
+    }
+  };
 
   return (
     <View
@@ -66,7 +96,11 @@ export default function SignupScreen({ navigation }) {
         autoCapitalize="none"
       />
 
-      <Button style={{ marginTop: 10 }} mode="contained">
+      <Button
+        style={{ marginTop: 10 }}
+        mode="contained"
+        onPress={() => onSignupPress()}
+      >
         Create Account
       </Button>
 
