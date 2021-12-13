@@ -34,7 +34,6 @@ export default function SignupScreen({ navigation }) {
         uid,
         name,
         email,
-        password,
       };
 
       addDoc(collection(db, "users"), userData);
