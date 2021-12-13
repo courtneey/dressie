@@ -2,7 +2,12 @@ import "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { SignupScreen, LoginScreen, HomeScreen } from "./src/screens";
+import {
+  SignupScreen,
+  LoginScreen,
+  HomeScreen,
+  WeatherScreen,
+} from "./src/screens";
 import { Provider as PaperProvider } from "react-native-paper";
 import theme from "./src/Styles/PaperTheme";
 import { onAuthStateChanged } from "@firebase/auth";
@@ -65,6 +70,14 @@ export default function App() {
             headerRight: () => LogOut(),
           }}
         />
+
+        <Tab.Screen
+          name="Weather"
+          component={WeatherScreen}
+          options={{
+            headerRight: () => LogOut(),
+          }}
+        />
       </>
     );
   } else {
@@ -92,6 +105,8 @@ export default function App() {
                 iconName = focused ? "home" : "home-outline";
               } else if (route.name === "Log Out") {
                 iconName = focused ? "log-out" : "log-out-outline";
+              } else if (route.name === "Weather") {
+                iconName = focused ? "rainy" : "rainy-outline";
               }
 
               return <Ionicons name={iconName} size={size} color={color} />;
