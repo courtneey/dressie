@@ -85,9 +85,15 @@ export default function WeatherScreen() {
         <Text>Longitude: {location.coords.longitude}</Text>
 
         <Text style={{marginTop: 20}}>Current Weather</Text>
-        <Text>Temperature: {JSON.stringify(currentWeather!.temp)}</Text>
-        <Text>Category: {JSON.stringify(currentWeather!.category)}</Text>
-        <Text>Description: {JSON.stringify(currentWeather!.description)}</Text>
+        {currentWeather ? (
+          <>
+          <Text>Temperature: {JSON.stringify(currentWeather!.temp)}</Text>
+          <Text>Category: {JSON.stringify(currentWeather!.category)}</Text>
+          <Text>Description: {JSON.stringify(currentWeather!.description)}</Text>
+          </>
+        )
+          : null}
+
         </>
         :
         null
