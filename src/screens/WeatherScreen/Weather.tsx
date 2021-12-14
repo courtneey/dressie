@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import * as ExpoLocation from 'expo-location';
 import { IconButton, Button,ActivityIndicator } from "react-native-paper";
-import { Text } from "react-native";
 import secrets from "../../../secrets";
+import OutfitScreen from '../OutfitScreen/Outfits';
+
 
 interface Weather {
   temp: number,
@@ -46,8 +47,8 @@ export default function WeatherScreen() {
 
       const finalWeather = {
         temp,
-        category: weatherData.weather[0].main,
-        description: weatherData.weather[0].description
+        category: weatherData.weather[0].main.toLowerCase(),
+        description: weatherData.weather[0].description.toLowerCase()
       }
 
       setCurrentWeather(finalWeather);
@@ -83,24 +84,8 @@ export default function WeatherScreen() {
 
       <View style={{marginTop: 20}}>
       {loading ? <ActivityIndicator/> : null}
-      {location ?
-        <>
-        <Text>Latitude: {location.coords.latitude}</Text>
-        <Text>Longitude: {location.coords.longitude}</Text>
-
-        <Text style={{marginTop: 20}}>Current Weather</Text>
-        {currentWeather ? (
-          <>
-          <Text>Temperature: {JSON.stringify(currentWeather!.temp)}</Text>
-          <Text>Category: {JSON.stringify(currentWeather!.category)}</Text>
-          <Text>Description: {JSON.stringify(currentWeather!.description)}</Text>
-          </>
-        )
-          : null}
-
-        </>
-        :
-        null
+      {location && currentWeather ?
+          <OutfitScreen weather={currentWeather}/> : null
       }
       </View>
     </View>
