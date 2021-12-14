@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import * as ExpoLocation from 'expo-location';
@@ -6,10 +5,16 @@ import { IconButton, Button,ActivityIndicator } from "react-native-paper";
 import { Text } from "react-native";
 import secrets from "../../../secrets";
 
+interface Weather {
+  temp: number,
+  category: string,
+  description: string
+}
+
 export default function WeatherScreen() {
   const [location, setLocation] = useState<ExpoLocation.LocationObject | null>(null);
   const [loading, setLoading] = useState(false);
-  const [currentWeather, setCurrentWeather] = useState<Response | null>(null);
+  const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
 
   const getLocation = async () => {
     setLoading(true);
@@ -33,8 +38,15 @@ export default function WeatherScreen() {
 
     try {
       const weatherResponse = await fetch(url);
-      console.log('weather response:', weatherResponse);
-      setCurrentWeather(await weatherResponse.json());
+      const weatherData = await weatherResponse.json();
+
+      const finalWeather = {
+        temp: weatherData.main.temp,
+        category: weatherData.weather[0].main,
+        description: weatherData.weather[0].description
+      }
+
+      setCurrentWeather(finalWeather);
       setLoading(false);
     } catch (err) {
       console.log('There was an issue with getting weather: ', err);
@@ -72,15 +84,15 @@ export default function WeatherScreen() {
         <Text>Latitude: {location.coords.latitude}</Text>
         <Text>Longitude: {location.coords.longitude}</Text>
 
-        <Text style={{marginTop: 20}}>Current Weather: {JSON.stringify(currentWeather)}</Text>
+        <Text style={{marginTop: 20}}>Current Weather</Text>
+        <Text>Temperature: {JSON.stringify(currentWeather!.temp)}</Text>
+        <Text>Category: {JSON.stringify(currentWeather!.category)}</Text>
+        <Text>Description: {JSON.stringify(currentWeather!.description)}</Text>
         </>
         :
         null
       }
       </View>
-
-
-
     </View>
   );
 }
