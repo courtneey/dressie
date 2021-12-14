@@ -59,6 +59,10 @@ export default function WeatherScreen() {
   }
 
   useEffect(() => {
+    getLocation();
+  }, [])
+
+  useEffect(() => {
     if (location) {
       getWeather(location);
     }
@@ -73,13 +77,14 @@ export default function WeatherScreen() {
         marginTop: 20,
       }}
     >
-      <Text>Today's Forecast: {currentWeather ? currentWeather.category : null}</Text>
-      <IconButton icon="tshirt-crew" size={100} color="gray" />
-      <Button mode="contained" onPress={() => {
-        getLocation();
-      }}>
-        Get Dressed
-      </Button>
+      { location ?
+        ( <>
+          <Text>Today's Forecast: {currentWeather ? currentWeather.category : null}</Text>
+          <IconButton icon="tshirt-crew" size={100} color="gray" />
+          </>
+        )
+        : null
+      }
 
 
       <View style={{marginTop: 20}}>
