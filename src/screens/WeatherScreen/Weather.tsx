@@ -1,8 +1,6 @@
 
-import React, { useEffect, useState } from "react";
-import { PermissionsAndroid, Platform, View } from "react-native";
-import GetLocation from "react-native-get-location";
-import Geolocation from 'react-native-geolocation-service';
+import React, { useState } from "react";
+import { View } from "react-native";
 import * as ExpoLocation from 'expo-location';
 import { IconButton, Button,ActivityIndicator } from "react-native-paper";
 import { Text } from "react-native";
@@ -23,19 +21,11 @@ export default function WeatherScreen() {
 
     let userLocation = await ExpoLocation.getCurrentPositionAsync({})
 
-    console.log('userLocation:', userLocation)
-
     setLocation(userLocation);
     setLoading(false);
 
   };
 
-  let text = "Waiting...";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
 
   return (
     <View
