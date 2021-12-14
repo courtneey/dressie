@@ -2,12 +2,17 @@ import "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { SignupScreen, LoginScreen, HomeScreen } from "./src/screens";
+import {
+  SignupScreen,
+  LoginScreen,
+  HomeScreen,
+  WeatherScreen,
+} from "./src/screens";
 import { Provider as PaperProvider } from "react-native-paper";
 import theme from "./src/Styles/PaperTheme";
-import { onAuthStateChanged } from "@firebase/auth";
+import { onAuthStateChanged, User } from "@firebase/auth";
 import { auth, db } from "./src/firebase/config";
-import { collection, onSnapshot, doc, getDoc } from "@firebase/firestore";
+import { collection, onSnapshot, doc, getDoc, DocumentData } from "@firebase/firestore";
 import { LogBox } from "react-native";
 import Loading from "./src/screens/Loading";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -19,21 +24,21 @@ LogBox.ignoreAllLogs();
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(async () => {
+  useEffect( () => {
     setLoading(true);
-    let userData;
+    let userData: DocumentData[] | void;
     // listen to users collection for new users
     onSnapshot(collection(db, "users"), (snapshot) => {
       userData = snapshot.docs.map((doc) => doc.data());
 
       // listen to sign-in state
-      onAuthStateChanged(auth, async (currentUser) => {
+      onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
           // if the user is signed in, find their doc
-          const correctUser = userData.find(
+          const correctUser = userData!.find(
             (doc) => doc.uid === currentUser.uid
           );
 
@@ -65,6 +70,14 @@ export default function App() {
             headerRight: () => LogOut(),
           }}
         />
+
+        <Tab.Screen
+          name="Weather"
+          component={WeatherScreen}
+          options={{
+            headerRight: () => LogOut(),
+          }}
+        />
       </>
     );
   } else {
@@ -84,15 +97,27 @@ export default function App() {
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
 
-              if (route.name === "Log In") {
-                iconName = focused ? "log-in" : "log-in-outline";
-              } else if (route.name === "Sign Up") {
-                iconName = focused ? "clipboard" : "clipboard-outline";
-              } else if (route.name === "Home") {
-                iconName = focused ? "home" : "home-outline";
-              } else if (route.name === "Log Out") {
-                iconName = focused ? "log-out" : "log-out-outline";
+              switch (route.name) {
+                case 'Log In':
+                  iconName = 'log-in';
+                  break;
+                case 'Sign Up':
+                  iconName = 'clipboard';
+                  break;
+                case 'Home':
+                  iconName = 'home';
+                  break;
+                case 'Log Out':
+                  iconName = 'log-out';
+                  break;
+                case 'Weather':
+                  iconName = 'partly-sunny';
+                  break;
+                default:
+                  iconName = 'help';
               }
+
+              if (!focused) iconName += '-outline';
 
               return <Ionicons name={iconName} size={size} color={color} />;
             },

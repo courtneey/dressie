@@ -1,8 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { Text, Button } from "react-native-paper";
-import { auth } from "../../firebase/config";
-import { signOut } from "@firebase/auth";
+import { Text } from "react-native-paper";
 
 export default function HomeScreen() {
   return (
