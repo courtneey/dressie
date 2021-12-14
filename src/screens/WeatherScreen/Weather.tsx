@@ -40,8 +40,12 @@ export default function WeatherScreen() {
       const weatherResponse = await fetch(url);
       const weatherData = await weatherResponse.json();
 
+      // convert temp from Kelvin to Fahrenheit
+      let {temp} = weatherData.main;
+      temp = Math.floor(((temp - 273.15) * 1.8) + 32);
+
       const finalWeather = {
-        temp: weatherData.main.temp,
+        temp,
         category: weatherData.weather[0].main,
         description: weatherData.weather[0].description
       }
