@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { db } from '../../firebase/config';
 import { collection, getDocs, query, where } from '@firebase/firestore';
-import { Button } from 'react-native-paper';
+import { Card, Avatar } from 'react-native-paper';
 
 export default function OutfitScreen({ weather }) {
   const [outfits, setOutfits] = useState<object[]>([]);
@@ -34,11 +34,18 @@ export default function OutfitScreen({ weather }) {
   }, [])
 
   return (
-    <View>
+    <View style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center' }}>
       { outfits ?
         (
           outfits.map((outfit) => {
-            return <Text key={outfit.id}>{outfit.name}</Text>
+            return (
+              <Avatar.Image
+                key={outfit.id}
+                size={100}
+                source={{uri: outfit.image}}
+                style={{ margin: 5 }}
+              />
+            )
           })
         )
         : null
