@@ -6,12 +6,7 @@ import { Card, Avatar, Button } from 'react-native-paper';
 
 export default function OutfitScreen({ weather }) {
   const [outfits, setOutfits] = useState<object[]>([]);
-  const { temp, category, description } = weather;
-
-  let tempType:string;
-  if (temp <= 45) tempType = "cold";
-  if (temp > 45 && temp <= 65) tempType = "mild";
-  if (temp > 65) tempType = "hot";
+  const { temp, category, description, tempType } = weather;
 
   const getOutfits = async () => {
     // search clothing collection for documents containing the applicable tempTag

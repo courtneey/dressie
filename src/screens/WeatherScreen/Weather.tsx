@@ -45,10 +45,17 @@ export default function WeatherScreen() {
       let {temp} = weatherData.main;
       temp = Math.floor(((temp - 273.15) * 1.8) + 32);
 
+      // create a tempType for matching weather to clothes in db
+      let tempType:string = '';
+      if (temp <= 45) tempType = "cold";
+      if (temp > 45 && temp <= 65) tempType = "mild";
+      if (temp > 65) tempType = "hot";
+
       const finalWeather = {
         temp,
         category: weatherData.weather[0].main,
-        description: weatherData.weather[0].description.toLowerCase()
+        description: weatherData.weather[0].description.toLowerCase(),
+        tempType
       }
 
       setCurrentWeather(finalWeather);
