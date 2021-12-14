@@ -47,7 +47,7 @@ export default function WeatherScreen() {
 
       const finalWeather = {
         temp,
-        category: weatherData.weather[0].main.toLowerCase(),
+        category: weatherData.weather[0].main,
         description: weatherData.weather[0].description.toLowerCase()
       }
 
@@ -73,12 +73,12 @@ export default function WeatherScreen() {
         marginTop: 20,
       }}
     >
-      <Text>Weather Screen</Text>
+      <Text>Today's Forecast: {currentWeather ? currentWeather.category : null}</Text>
       <IconButton icon="tshirt-crew" size={100} color="gray" />
       <Button mode="contained" onPress={() => {
         getLocation();
       }}>
-        Press Me
+        Get Dressed
       </Button>
 
 
