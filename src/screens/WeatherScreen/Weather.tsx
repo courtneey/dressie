@@ -84,20 +84,8 @@ export default function WeatherScreen() {
 
       <View style={{marginTop: 20}}>
       {loading ? <ActivityIndicator/> : null}
-      {location ?
-        <>
-        <Text>Latitude: {location.coords.latitude}</Text>
-        <Text>Longitude: {location.coords.longitude}</Text>
-
-        <Text style={{marginTop: 20}}>Current Weather</Text>
-        {currentWeather ? (
-          <OutfitScreen weather={currentWeather}/>
-        )
-          : null}
-
-        </>
-        :
-        null
+      {location && currentWeather ?
+          <OutfitScreen weather={currentWeather}/> : null
       }
       </View>
     </View>

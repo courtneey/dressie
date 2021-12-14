@@ -29,16 +29,12 @@ export default function OutfitScreen({ weather }) {
 
   }
 
+  useEffect(() => {
+    getOutfits();
+  }, [])
+
   return (
-    <>
-    <Text style={{ marginTop: 20 }}>Outfit Screen</Text>
-
-    <Text>Temperature: {temp}</Text>
-    <Text>Category: {category}</Text>
-    <Text>Description: {description}</Text>
-
     <View>
-      <Button mode="contained" onPress={() => getOutfits()}>Get Outfits</Button>
       { outfits ?
         (
           outfits.map((outfit) => {
@@ -48,8 +44,6 @@ export default function OutfitScreen({ weather }) {
         : null
       }
     </View>
-
-    </>
   )
 
 }
