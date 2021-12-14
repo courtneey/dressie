@@ -5,9 +5,10 @@ import { collection, getDocs, query, where } from '@firebase/firestore';
 import { Card, Avatar, Button } from 'react-native-paper';
 
 export default function OutfitScreen({ weather }) {
-  const [outfits, setOutfits] = useState<object[]>([]);
+  const [outfits, setOutfits] = useState(null);
   const { temp, category, description, tempType } = weather;
-  const [customOutfit, setCustomOutfit] = useState({})
+  const [categorizedItems, setCategorizedItems] = useState(null)
+  const [randomOutfit, setRandomOutfit] = useState(null);
 
   const getOutfits = async () => {
     // search clothing collection for documents containing the applicable tempTag
@@ -39,9 +40,31 @@ export default function OutfitScreen({ weather }) {
       classified[category].push(item)
     })
 
-    setCustomOutfit(classified);
+    setCategorizedItems(classified);
 
   }
+
+  const randomizeResults = (items) => {
+    // random outfit should consist of one item from each category
+
+    let newOutfit = {
+      top: {},
+      bottoms: {},
+      outerwear: {},
+      dress: {},
+      shoes: {}
+    }
+
+    newOutfit.top = items.top[Math.floor(Math.random()*items.top.length)];
+    newOutfit.bottoms = items.bottoms[Math.floor(Math.random()*items.bottoms.length)];
+    newOutfit.outerwear = items.outerwear[Math.floor(Math.random()*items.outerwear.length)];
+    newOutfit.dress = items.dress[Math.floor(Math.random()*items.dress.length)];
+    newOutfit.shoes = items.shoes[Math.floor(Math.random()*items.shoes.length)];
+
+    setRandomOutfit(newOutfit);
+
+  }
+
 
   useEffect(() => {
     if (outfits) {
@@ -50,6 +73,14 @@ export default function OutfitScreen({ weather }) {
     }
 
   }, [outfits])
+
+  useEffect(() => {
+    if (categorizedItems) {
+      // generate a random outfit
+      randomizeResults(categorizedItems);
+    }
+
+  }, [categorizedItems])
 
   return (
     <>
@@ -61,7 +92,7 @@ export default function OutfitScreen({ weather }) {
         </Button>
       </View>
 
-      <View style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center' }}>
+      {/* <View style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center' }}>
         { outfits ?
           (
             outfits.map((outfit) => {
@@ -77,7 +108,52 @@ export default function OutfitScreen({ weather }) {
           )
           : null
         }
+      </View> */}
+
+      <View style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center', width: 300 }}>
+        { randomOutfit ?
+          (
+            <>
+              <Avatar.Text
+                size={100}
+                label="top"
+                style={{ justifyContent: 'center', marginRight: 15 }}
+                labelStyle={{ fontSize: 20 }}
+              />
+              <Avatar.Image
+                size={100}
+                source={{uri: randomOutfit.top.image}}
+              />
+
+              <Avatar.Image
+                size={100}
+                source={{uri: randomOutfit.bottoms.image}}
+              />
+              <Avatar.Text
+                size={100}
+                label="bottoms"
+                style={{ justifyContent: 'center', marginLeft: 15 }}
+                labelStyle={{ fontSize: 20 }}
+              />
+
+              <Avatar.Text
+                size={100}
+                label="shoes"
+                style={{ justifyContent: 'center', marginRight: 15 }}
+                labelStyle={{ fontSize: 20 }}
+              />
+              <Avatar.Image
+                size={100}
+                source={{uri: randomOutfit.shoes.image}}
+              />
+
+            </>
+          )
+          : null
+        }
       </View>
+
+
     </>
   )
 
