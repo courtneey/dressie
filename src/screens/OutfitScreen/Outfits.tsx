@@ -7,6 +7,7 @@ import { Card, Avatar, Button } from 'react-native-paper';
 export default function OutfitScreen({ weather }) {
   const [outfits, setOutfits] = useState<object[]>([]);
   const { temp, category, description, tempType } = weather;
+  const [customOutfit, setCustomOutfit] = useState({})
 
   const getOutfits = async () => {
     // search clothing collection for documents containing the applicable tempTag
@@ -23,6 +24,32 @@ export default function OutfitScreen({ weather }) {
     setOutfits(tempOutfits);
 
   }
+
+  const classifyItems = (items:object[]) => {
+    let classified = {
+      top: [],
+      bottoms: [],
+      outerwear: [],
+      dress: [],
+      shoes: []
+    }
+
+    items.forEach((item) => {
+      const { category } = item;
+      classified[category].push(item)
+    })
+
+    setCustomOutfit(classified);
+
+  }
+
+  useEffect(() => {
+    if (outfits) {
+      // classify items into separate clothing categories
+      classifyItems(outfits);
+    }
+
+  }, [outfits])
 
   return (
     <>
