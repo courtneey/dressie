@@ -12,7 +12,7 @@ import {
 } from "react-native-paper";
 
 export default function CameraScreen() {
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const selectImage = async () => {
@@ -60,7 +60,7 @@ export default function CameraScreen() {
     }
   };
 
-  const uploadImage = async (uri) => {
+  const uploadImage = async (uri: string) => {
     let resizedImage = await ImageResize.manipulateAsync(uri, [
       {
         resize: {
@@ -85,7 +85,7 @@ export default function CameraScreen() {
     return resizedUri;
   };
 
-  const retrieveImage = async (uri) => {
+  const retrieveImage = async (uri: string) => {
     // extract filename from uri
     const index = uri.lastIndexOf("/") + 1;
     const fileName = uri.substring(index);
