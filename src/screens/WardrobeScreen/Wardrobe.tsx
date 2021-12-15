@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { db } from "../../firebase/config";
 import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { ActivityIndicator, Avatar } from "react-native-paper";
@@ -34,7 +34,7 @@ export default function WardrobeScreen(props: Props) {
     setLoading(false);
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     loadWardrobe();
 
     // listen to updates to wardrobe subcollection
@@ -50,15 +50,20 @@ export default function WardrobeScreen(props: Props) {
       <Text style={{ marginBottom: 20 }}>Your Wardrobe</Text>
 
       {loading ? <ActivityIndicator style={{ marginTop: 30 }} /> : null}
-      {clothes
-        ? clothes.map((item) => (
+      {clothes ? (
+        <FlatList
+          data={clothes}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          renderItem={({ item }) => (
             <Avatar.Image
               size={150}
               source={{ uri: item.image }}
-              style={{ marginBottom: 20 }}
+              style={{ margin: 10 }}
             />
-          ))
-        : null}
+          )}
+        />
+      ) : null}
     </View>
   );
 }
