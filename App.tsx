@@ -7,6 +7,7 @@ import {
   HomeScreen,
   WeatherScreen,
   CameraScreen,
+  WardrobeScreen,
 } from "./src/screens";
 import { Provider as PaperProvider } from "react-native-paper";
 import theme from "./src/Styles/PaperTheme";
@@ -81,6 +82,14 @@ export default function App() {
         />
 
         <Tab.Screen
+          name="Wardrobe"
+          component={WardrobeScreen}
+          options={{
+            headerRight: () => LogOut(),
+          }}
+        />
+
+        <Tab.Screen
           name="Weather"
           component={WeatherScreen}
           options={{
@@ -124,6 +133,9 @@ export default function App() {
                   break;
                 case "Camera":
                   iconName = "camera";
+                  break;
+                case "Wardrobe":
+                  iconName = "shirt";
                   break;
                 default:
                   iconName = "help";
