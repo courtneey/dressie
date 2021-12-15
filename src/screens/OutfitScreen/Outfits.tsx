@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import { db } from "../../firebase/config";
 import { collection, getDocs, query, where } from "@firebase/firestore";
-import { Card, Avatar, Button } from "react-native-paper";
+import { Avatar, Button } from "react-native-paper";
 import { Weather } from "../WeatherScreen/Weather";
 
 enum Category {
@@ -26,7 +26,7 @@ enum WeatherTag {
   clouds = "clouds",
 }
 
-interface Outfit {
+interface ClothingItem {
   category: Category;
   color: string;
   id: string;
@@ -40,16 +40,16 @@ interface Outfit {
 }
 
 interface CategorizedItems {
-  [key: string]: Outfit[];
+  [key: string]: ClothingItem[];
 }
 
 interface RealOutfit {
-  [key: string]: Outfit;
+  [key: string]: ClothingItem;
 }
 
 export default function OutfitScreen({ weather }: { weather: Weather }) {
-  const [outfits, setOutfits] = useState<Outfit[] | null>(null);
-  const { temp, category, description, tempType } = weather;
+  const [outfits, setOutfits] = useState<ClothingItem[] | null>(null);
+  const { tempType } = weather;
   const [categorizedItems, setCategorizedItems] =
     useState<CategorizedItems | null>(null);
   const [randomOutfit, setRandomOutfit] = useState<RealOutfit | null>(null);
@@ -57,7 +57,7 @@ export default function OutfitScreen({ weather }: { weather: Weather }) {
   const getOutfits = async () => {
     // search clothing collection for documents containing the applicable tempTag
 
-    let tempOutfits: Outfit[] = [];
+    let tempOutfits: ClothingItem[] = [];
 
     const clothingCollRef = collection(db, "clothing");
     const q = query(
@@ -66,13 +66,13 @@ export default function OutfitScreen({ weather }: { weather: Weather }) {
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      tempOutfits.push(doc.data() as Outfit);
+      tempOutfits.push(doc.data() as ClothingItem);
     });
 
     setOutfits(tempOutfits);
   };
 
-  const classifyItems = (items: Outfit[]) => {
+  const classifyItems = (items: ClothingItem[]) => {
     const classified: CategorizedItems = {};
 
     // check if category exists in classified obj
@@ -90,11 +90,11 @@ export default function OutfitScreen({ weather }: { weather: Weather }) {
   };
 
   const randomizeResults = (items: CategorizedItems) => {
-    // random outfit should consist of one item from each category
     const categories = Object.keys(items);
 
     let newOutfit: RealOutfit = {};
 
+    // assign a random clothing item to each category
     categories.forEach((category) => {
       if (newOutfit[category] === undefined) {
         newOutfit[category] =
@@ -119,7 +119,7 @@ export default function OutfitScreen({ weather }: { weather: Weather }) {
     }
   }, [categorizedItems]);
 
-  let renderOutfit: object[] = [];
+  let renderOutfit: ClothingItem[] = [];
 
   if (randomOutfit) {
     renderOutfit = [
@@ -130,7 +130,7 @@ export default function OutfitScreen({ weather }: { weather: Weather }) {
     ];
   }
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }: { item: ClothingItem }) => {
     if (!item.category) {
       return <View></View>;
     }
