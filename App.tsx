@@ -26,6 +26,7 @@ const Stack = createStackNavigator();
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   useEffect( () => {
     setLoading(true);
@@ -45,6 +46,7 @@ export default function App() {
           // if the user is found, set their data in local state
           if (correctUser) {
             setUser(currentUser);
+            setUserData(correctUser);
           }
         } else {
           setUser(null);
@@ -60,7 +62,7 @@ export default function App() {
   if (loading) {
     navOptions = <Tab.Screen name="Loading" component={Loading} />;
   }
-  if (user) {
+  if (user && userData) {
     navOptions = (
       <>
         <Tab.Screen
@@ -69,6 +71,7 @@ export default function App() {
           options={{
             headerRight: () => LogOut(),
           }}
+          initialParams={userData}
         />
 
         <Tab.Screen
