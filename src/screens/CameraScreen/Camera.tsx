@@ -30,6 +30,7 @@ export default function CameraScreen() {
     });
 
     if (!result.cancelled) {
+      setImage(null);
       setLoading(true);
       // upload image to cloud storage
       const finalImage = await uploadImage(result.uri);
@@ -50,6 +51,7 @@ export default function CameraScreen() {
     });
 
     if (!result.cancelled) {
+      setImage(null);
       setLoading(true);
       // upload image to cloud storage
       const finalImage = await uploadImage(result.uri);
