@@ -81,7 +81,7 @@ export default function LoginScreen({ navigation }) {
         Log In
       </Button>
 
-      <View style={{ textAlign: "center", marginTop: 10 }}>
+      <View style={{ textAlign: "center", marginTop: 15 }}>
         <Text>
           Don't have an account?{" "}
           <Text
