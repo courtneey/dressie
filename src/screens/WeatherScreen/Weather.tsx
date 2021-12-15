@@ -87,7 +87,7 @@ export default function WeatherScreen() {
       { location ?
         ( <>
           <Text>Today's Forecast: {currentWeather?.category} ({currentWeather?.temp} °F)</Text>
-          <IconButton icon="tshirt-crew" size={100} color="gray" />
+          <IconButton icon="tshirt-crew" size={75} color="gray" />
           </>
         )
         : null
