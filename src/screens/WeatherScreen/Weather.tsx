@@ -85,7 +85,7 @@ export default function WeatherScreen() {
         marginTop: 30,
       }}
     >
-      {loading ? <ActivityIndicator /> : null}
+      {loading ? <ActivityIndicator style={{ marginTop: 100 }} /> : null}
       {location && currentWeather ? (
         <>
           <Text>
