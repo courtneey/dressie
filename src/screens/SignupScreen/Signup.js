@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Text, TextInput, Button } from "react-native-paper";
-import { View } from "react-native";
+import { Text, TextInput, Button, Subheading, Title } from "react-native-paper";
+import { View, Image } from "react-native";
 import { db, auth } from "../../firebase/config";
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
@@ -53,6 +53,18 @@ export default function SignupScreen({ navigation }) {
         marginTop: 20,
       }}
     >
+      <Image
+        style={{ width: 140, height: 140, alignSelf: "center" }}
+        source={require("../../../assets/logo.jpg")}
+      />
+      <Title style={{ alignSelf: "center", marginBottom: 5, marginTop: 10 }}>
+        Welcome to Dressie
+      </Title>
+      <Subheading
+        style={{ alignSelf: "center", marginBottom: 20, fontSize: 15 }}
+      >
+        Sign up to get started!
+      </Subheading>
       <TextInput
         mode="outlined"
         placeholder="Name"
@@ -103,7 +115,7 @@ export default function SignupScreen({ navigation }) {
         Create Account
       </Button>
 
-      <View style={{ textAlign: "center", marginTop: 10 }}>
+      <View style={{ textAlign: "center", marginTop: 15 }}>
         <Text>
           Already have an account?{" "}
           <Text

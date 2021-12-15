@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View } from "react-native";
-import { TextInput, Button, Text } from "react-native-paper";
+import { View, Image } from "react-native";
+import { TextInput, Button, Text, Subheading, Title } from "react-native-paper";
 import { auth, db } from "../../firebase/config";
 import { signInWithEmailAndPassword } from "@firebase/auth";
 import { collection, getDocs } from "@firebase/firestore";
@@ -40,6 +40,18 @@ export default function LoginScreen({ navigation }) {
         marginTop: 20,
       }}
     >
+      <Image
+        style={{ width: 200, height: 200, alignSelf: "center" }}
+        source={require("../../../assets/logo.jpg")}
+      />
+      <Title style={{ alignSelf: "center", marginBottom: 5, marginTop: 10 }}>
+        Dressie
+      </Title>
+      <Subheading
+        style={{ alignSelf: "center", marginBottom: 20, fontSize: 15 }}
+      >
+        Get dressed and get going!
+      </Subheading>
       <TextInput
         mode="outlined"
         placeholder="Email"
@@ -69,7 +81,7 @@ export default function LoginScreen({ navigation }) {
         Log In
       </Button>
 
-      <View style={{ textAlign: "center", marginTop: 10 }}>
+      <View style={{ textAlign: "center", marginTop: 15 }}>
         <Text>
           Don't have an account?{" "}
           <Text
