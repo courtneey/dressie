@@ -85,7 +85,8 @@ export default function WeatherScreen() {
         marginTop: 30,
       }}
     >
-      {location ? (
+      {loading ? <ActivityIndicator /> : null}
+      {location && currentWeather ? (
         <>
           <Text>
             Today's Forecast: {currentWeather?.category} ({currentWeather?.temp}{" "}
@@ -96,7 +97,6 @@ export default function WeatherScreen() {
       ) : null}
 
       <View style={{ marginTop: 20 }}>
-        {loading ? <ActivityIndicator /> : null}
         {location && currentWeather ? (
           <OutfitScreen weather={currentWeather} />
         ) : null}
