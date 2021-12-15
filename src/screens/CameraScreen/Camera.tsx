@@ -19,11 +19,29 @@ export default function CameraScreen() {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("Sorry, we need camera roll permissions to do this!");
+        Alert.alert("Sorry, we need gallery permissions to do this!");
       }
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      // upload image to cloud storage
+      const finalImage = await uploadImage(result.uri);
+      return finalImage;
+    }
+  };
+
+  const useCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Sorry, we need camera permissions to do this!");
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
     });
@@ -79,16 +97,15 @@ export default function CameraScreen() {
         alignItems: "center",
         alignSelf: "center",
         marginTop: 30,
-        width: 300,
       }}
     >
-      <Text style={{ alignSelf: "center" }}>Customize Your Wardrobe</Text>
+      <Text style={{ alignSelf: "center" }}>Upload to Your Wardrobe</Text>
 
       <IconButton icon="wardrobe" size={75} color="gray" />
 
       <Button
         mode="contained"
-        style={{ width: 150, alignSelf: "center" }}
+        style={{ width: 140, alignSelf: "center", marginBottom: 15 }}
         onPress={async () => {
           const selectedImage = await selectImage();
           if (selectedImage) {
@@ -99,11 +116,26 @@ export default function CameraScreen() {
           }
         }}
       >
-        Upload
+        Gallery
+      </Button>
+      <Text>- OR -</Text>
+      <Button
+        mode="contained"
+        style={{ width: 140, alignSelf: "center", marginTop: 15 }}
+        onPress={async () => {
+          const takenImage = await useCamera();
+          if (takenImage) {
+            const retrievedUrl = await retrieveImage(takenImage);
+            setImage(retrievedUrl);
+            Alert.alert("Added to wardrobe!");
+          }
+        }}
+      >
+        Camera
       </Button>
       {image ? (
-        <View style={{ alignItems: "center", marginTop: 50 }}>
-          <Avatar.Image size={300} source={{ uri: image }} />
+        <View style={{ alignItems: "center", marginTop: 30 }}>
+          <Avatar.Image size={260} source={{ uri: image }} />
         </View>
       ) : null}
     </View>
