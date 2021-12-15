@@ -45,10 +45,17 @@ export default function WeatherScreen() {
       let {temp} = weatherData.main;
       temp = Math.floor(((temp - 273.15) * 1.8) + 32);
 
+      // create a tempType for matching weather to clothes in db
+      let tempType:string = '';
+      if (temp <= 45) tempType = "cold";
+      if (temp > 45 && temp <= 65) tempType = "mild";
+      if (temp > 65) tempType = "hot";
+
       const finalWeather = {
         temp,
-        category: weatherData.weather[0].main.toLowerCase(),
-        description: weatherData.weather[0].description.toLowerCase()
+        category: weatherData.weather[0].main,
+        description: weatherData.weather[0].description.toLowerCase(),
+        tempType
       }
 
       setCurrentWeather(finalWeather);
@@ -57,6 +64,10 @@ export default function WeatherScreen() {
       console.log('There was an issue with getting weather: ', err);
     }
   }
+
+  useEffect(() => {
+    getLocation();
+  }, [])
 
   useEffect(() => {
     if (location) {
@@ -73,13 +84,14 @@ export default function WeatherScreen() {
         marginTop: 20,
       }}
     >
-      <Text>Weather Screen</Text>
-      <IconButton icon="tshirt-crew" size={100} color="gray" />
-      <Button mode="contained" onPress={() => {
-        getLocation();
-      }}>
-        Press Me
-      </Button>
+      { location ?
+        ( <>
+          <Text>Today's Forecast: {currentWeather?.category} ({currentWeather?.temp} °F)</Text>
+          <IconButton icon="tshirt-crew" size={100} color="gray" />
+          </>
+        )
+        : null
+      }
 
 
       <View style={{marginTop: 20}}>
