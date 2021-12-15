@@ -1,131 +1,194 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, FlatList } from 'react-native';
-import { db } from '../../firebase/config';
-import { collection, getDocs, query, where } from '@firebase/firestore';
-import { Card, Avatar, Button } from 'react-native-paper';
+import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, FlatList } from "react-native";
+import { db } from "../../firebase/config";
+import { collection, getDocs, query, where } from "@firebase/firestore";
+import { Card, Avatar, Button } from "react-native-paper";
+import { Weather } from "../WeatherScreen/Weather";
 
-export default function OutfitScreen({ weather }) {
-  const [outfits, setOutfits] = useState(null);
+enum Category {
+  top = "top",
+  bottoms = "bottoms",
+  shoes = "shoes",
+  outerwear = "outerwear",
+  dress = "dress",
+}
+
+enum TempTag {
+  cold = "cold",
+  hot = "hot",
+  mild = "mild",
+}
+
+enum WeatherTag {
+  snow = "snow",
+  sun = "sun",
+  rain = "rain",
+  clouds = "clouds",
+}
+
+interface Outfit {
+  category: Category;
+  color: string;
+  id: string;
+  image: string;
+  material: string;
+  modelImage?: string;
+  name: string;
+  section: string;
+  tempTags: TempTag[];
+  weatherTags: WeatherTag[];
+}
+
+interface CategorizedItems {
+  [key: string]: Outfit[];
+}
+
+interface RealOutfit {
+  [key: string]: Outfit;
+}
+
+export default function OutfitScreen({ weather }: { weather: Weather }) {
+  const [outfits, setOutfits] = useState<Outfit[] | null>(null);
   const { temp, category, description, tempType } = weather;
-  const [categorizedItems, setCategorizedItems] = useState(null)
-  const [randomOutfit, setRandomOutfit] = useState(null);
+  const [categorizedItems, setCategorizedItems] =
+    useState<CategorizedItems | null>(null);
+  const [randomOutfit, setRandomOutfit] = useState<RealOutfit | null>(null);
 
   const getOutfits = async () => {
     // search clothing collection for documents containing the applicable tempTag
 
-    let tempOutfits:object[] = [];
+    let tempOutfits: Outfit[] = [];
 
     const clothingCollRef = collection(db, "clothing");
-    const q = query(clothingCollRef, where("tempTags", "array-contains", `${tempType}`));
+    const q = query(
+      clothingCollRef,
+      where("tempTags", "array-contains", `${tempType}`)
+    );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      tempOutfits.push(doc.data());
-    })
+      tempOutfits.push(doc.data() as Outfit);
+    });
 
     setOutfits(tempOutfits);
+  };
 
-  }
+  const classifyItems = (items: Outfit[]) => {
+    const classified: CategorizedItems = {};
 
-  const classifyItems = (items:object[]) => {
-    let classified = {
-      top: [],
-      bottoms: [],
-      outerwear: [],
-      dress: [],
-      shoes: []
-    }
-
+    // check if category exists in classified obj
+    // if it does, push this item into its category
     items.forEach((item) => {
       const { category } = item;
-      classified[category].push(item)
-    })
+      if (classified[category] === undefined) {
+        classified[category] = [item];
+      } else {
+        classified[category].push(item);
+      }
+    });
 
     setCategorizedItems(classified);
+  };
 
-  }
-
-  const randomizeResults = (items) => {
+  const randomizeResults = (items: CategorizedItems) => {
     // random outfit should consist of one item from each category
+    const categories = Object.keys(items);
 
-    let newOutfit = {
-      top: {},
-      bottoms: {},
-      outerwear: {},
-      shoes: {}
-    }
+    let newOutfit: RealOutfit = {};
 
-    newOutfit.top = items.top[Math.floor(Math.random()*items.top.length)];
-    newOutfit.bottoms = items.bottoms[Math.floor(Math.random()*items.bottoms.length)];
-    newOutfit.outerwear = items.outerwear[Math.floor(Math.random()*items.outerwear.length)];
-    newOutfit.shoes = items.shoes[Math.floor(Math.random()*items.shoes.length)];
+    categories.forEach((category) => {
+      if (newOutfit[category] === undefined) {
+        newOutfit[category] =
+          items[category][Math.floor(Math.random() * items[category].length)];
+      }
+    });
 
     setRandomOutfit(newOutfit);
-
-  }
-
+  };
 
   useEffect(() => {
     if (outfits) {
       // classify items into separate clothing categories
       classifyItems(outfits);
     }
-
-  }, [outfits])
+  }, [outfits]);
 
   useEffect(() => {
     if (categorizedItems) {
       // generate a random outfit
       randomizeResults(categorizedItems);
     }
+  }, [categorizedItems]);
 
-  }, [categorizedItems])
+  let renderOutfit: object[] = [];
 
-  let renderOutfit:object[] = [];
   if (randomOutfit) {
-    renderOutfit = [randomOutfit.top, randomOutfit.bottoms, randomOutfit.shoes, randomOutfit.outerwear]
+    renderOutfit = [
+      randomOutfit.top,
+      randomOutfit.bottoms,
+      randomOutfit.shoes,
+      randomOutfit.outerwear,
+    ];
   }
 
   const renderItem = ({ item }) => {
     if (!item.category) {
-      return;
+      return <View></View>;
     }
     return (
-    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-      <Avatar.Text
-        size={100}
-        label={item.category}
-        style={{ justifyContent: 'center', marginBottom: 15, marginRight: 15, backgroundColor: '#fff' }}
-        labelStyle={{ fontSize: 20, color: '#000' }}
-      />
-      <Avatar.Image
-        size={100}
-        style={{ marginBottom: 15 }}
-        source={{uri: item.image}}
-      />
-    </View>
-    )
- }
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
+        <Avatar.Text
+          size={100}
+          label={item.category}
+          style={{
+            justifyContent: "center",
+            marginBottom: 15,
+            marginRight: 15,
+            backgroundColor: "#fff",
+          }}
+          labelStyle={{ fontSize: 20, color: "#000" }}
+        />
+        <Avatar.Image
+          size={100}
+          style={{ marginBottom: 15 }}
+          source={{ uri: item.image }}
+        />
+      </View>
+    );
+  };
 
   return (
-    <View style={{ height: '80%', width: 300 }}>
-      <View style={{ width: 150, alignSelf: 'center', marginBottom: 30, marginTop: -25 }}>
-        <Button mode="contained" onPress={() => {
-              getOutfits();
-            }}>
-              Get Dressed
+    <View style={{ height: "80%", width: 300 }}>
+      <View
+        style={{
+          width: 150,
+          alignSelf: "center",
+          marginBottom: 30,
+          marginTop: -25,
+        }}
+      >
+        <Button
+          mode="contained"
+          onPress={() => {
+            getOutfits();
+          }}
+        >
+          Get Dressed
         </Button>
       </View>
 
-
-      { renderOutfit.length ? (
-          <FlatList
-            data={renderOutfit}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-          />
+      {renderOutfit.length ? (
+        <FlatList
+          data={renderOutfit}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+        />
       ) : null}
-
     </View>
-  )
-
+  );
 }

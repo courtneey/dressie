@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
-import * as ExpoLocation from 'expo-location';
-import { IconButton, Button,ActivityIndicator } from "react-native-paper";
+import * as ExpoLocation from "expo-location";
+import { IconButton, Button, ActivityIndicator } from "react-native-paper";
 import secrets from "../../../secrets";
-import OutfitScreen from '../OutfitScreen/Outfits';
+import OutfitScreen from "../OutfitScreen/Outfits";
 
-
-interface Weather {
-  temp: number,
-  category: string,
-  description: string
+export interface Weather {
+  temp: number;
+  category: string;
+  description: string;
+  tempType: string;
 }
 
 export default function WeatherScreen() {
-  const [location, setLocation] = useState<ExpoLocation.LocationObject | null>(null);
+  const [location, setLocation] = useState<ExpoLocation.LocationObject | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
 
@@ -21,20 +23,19 @@ export default function WeatherScreen() {
     setLoading(true);
 
     let { status } = await ExpoLocation.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      console.log('Location permission denied');
+    if (status !== "granted") {
+      console.log("Location permission denied");
     }
 
-    let userLocation = await ExpoLocation.getCurrentPositionAsync({})
+    let userLocation = await ExpoLocation.getCurrentPositionAsync({});
 
     setLocation(userLocation);
     setLoading(false);
-
   };
 
-  const getWeather = async (geolocation:ExpoLocation.LocationObject) => {
+  const getWeather = async (geolocation: ExpoLocation.LocationObject) => {
     setLoading(true);
-    const {latitude, longitude} = geolocation.coords;
+    const { latitude, longitude } = geolocation.coords;
     const url = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${secrets.WEATHER_API_KEY}`;
 
     try {
@@ -42,11 +43,11 @@ export default function WeatherScreen() {
       const weatherData = await weatherResponse.json();
 
       // convert temp from Kelvin to Fahrenheit
-      let {temp} = weatherData.main;
-      temp = Math.floor(((temp - 273.15) * 1.8) + 32);
+      let { temp } = weatherData.main;
+      temp = Math.floor((temp - 273.15) * 1.8 + 32);
 
       // create a tempType for matching weather to clothes in db
-      let tempType:string = '';
+      let tempType: string = "";
       if (temp <= 45) tempType = "cold";
       if (temp > 45 && temp <= 65) tempType = "mild";
       if (temp > 65) tempType = "hot";
@@ -55,25 +56,25 @@ export default function WeatherScreen() {
         temp,
         category: weatherData.weather[0].main,
         description: weatherData.weather[0].description.toLowerCase(),
-        tempType
-      }
+        tempType,
+      };
 
       setCurrentWeather(finalWeather);
       setLoading(false);
     } catch (err) {
-      console.log('There was an issue with getting weather: ', err);
+      console.log("There was an issue with getting weather: ", err);
     }
-  }
+  };
 
   useEffect(() => {
     getLocation();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (location) {
       getWeather(location);
     }
-  }, [location])
+  }, [location]);
 
   return (
     <View
@@ -84,21 +85,21 @@ export default function WeatherScreen() {
         marginTop: 30,
       }}
     >
-      { location ?
-        ( <>
-          <Text>Today's Forecast: {currentWeather?.category} ({currentWeather?.temp} °F)</Text>
+      {location ? (
+        <>
+          <Text>
+            Today's Forecast: {currentWeather?.category} ({currentWeather?.temp}{" "}
+            °F)
+          </Text>
           <IconButton icon="tshirt-crew" size={75} color="gray" />
-          </>
-        )
-        : null
-      }
+        </>
+      ) : null}
 
-
-      <View style={{marginTop: 20}}>
-      {loading ? <ActivityIndicator/> : null}
-      {location && currentWeather ?
-          <OutfitScreen weather={currentWeather}/> : null
-      }
+      <View style={{ marginTop: 20 }}>
+        {loading ? <ActivityIndicator /> : null}
+        {location && currentWeather ? (
+          <OutfitScreen weather={currentWeather} />
+        ) : null}
       </View>
     </View>
   );
