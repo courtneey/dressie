@@ -3,17 +3,30 @@ import { View, Text, Platform, Alert, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageResize from "expo-image-manipulator";
 import { uploadBytes, getDownloadURL, ref } from "firebase/storage";
-import { storage } from "../../firebase/config";
+import { storage, db } from "../../firebase/config";
 import {
   Button,
   IconButton,
   Avatar,
   ActivityIndicator,
 } from "react-native-paper";
+import { collection, addDoc, doc } from "firebase/firestore";
 
-export default function CameraScreen() {
+interface Props {
+  route: {
+    params: {
+      name: string;
+      email: string;
+      uid: string;
+      docId: string;
+    };
+  };
+}
+
+export default function CameraScreen(props: Props) {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { docId } = props.route.params;
 
   const selectImage = async () => {
     if (Platform.OS !== "web") {
@@ -97,6 +110,12 @@ export default function CameraScreen() {
     return retrievedUrl;
   };
 
+  const addToWardrobe = async (uri) => {
+    await addDoc(collection(db, "users", `${docId}`, "wardrobe"), {
+      image: uri,
+    });
+  };
+
   return (
     <View
       style={{
@@ -119,6 +138,7 @@ export default function CameraScreen() {
             // retrieve image url from cloud and update local state
             const retrievedUrl = await retrieveImage(selectedImage);
             setImage(retrievedUrl);
+            await addToWardrobe(retrievedUrl);
             Alert.alert("Added to wardrobe!");
           }
         }}
@@ -134,6 +154,7 @@ export default function CameraScreen() {
           if (takenImage) {
             const retrievedUrl = await retrieveImage(takenImage);
             setImage(retrievedUrl);
+            await addToWardrobe(retrievedUrl);
             Alert.alert("Added to wardrobe!");
           }
         }}
