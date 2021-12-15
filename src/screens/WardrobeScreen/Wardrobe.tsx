@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { db } from "../../firebase/config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { ActivityIndicator, Avatar } from "react-native-paper";
 
 interface Props {
@@ -19,13 +19,12 @@ export default function WardrobeScreen(props: Props) {
   const [clothes, setClothes] = useState(null);
   const [loading, setLoading] = useState(false);
   const { docId } = props.route.params;
+  const wardrobeSubRef = collection(db, "users", docId, "wardrobe");
 
-  useEffect(async () => {
+  const loadWardrobe = async () => {
     setLoading(true);
     // load wardrobe items
-    const querySnapshot = await getDocs(
-      collection(db, "users", docId, "wardrobe")
-    );
+    const querySnapshot = await getDocs(wardrobeSubRef);
     let clothesData = [];
     querySnapshot.forEach((doc) => {
       clothesData.push(doc.data());
@@ -33,6 +32,17 @@ export default function WardrobeScreen(props: Props) {
 
     setClothes(clothesData);
     setLoading(false);
+  };
+
+  useEffect(async () => {
+    loadWardrobe();
+
+    // listen to updates to wardrobe subcollection
+    const unsub = onSnapshot(wardrobeSubRef, () => {
+      loadWardrobe();
+    });
+
+    return unsub;
   }, []);
 
   return (
