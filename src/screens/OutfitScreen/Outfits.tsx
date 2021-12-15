@@ -51,14 +51,12 @@ export default function OutfitScreen({ weather }) {
       top: {},
       bottoms: {},
       outerwear: {},
-      dress: {},
       shoes: {}
     }
 
     newOutfit.top = items.top[Math.floor(Math.random()*items.top.length)];
     newOutfit.bottoms = items.bottoms[Math.floor(Math.random()*items.bottoms.length)];
     newOutfit.outerwear = items.outerwear[Math.floor(Math.random()*items.outerwear.length)];
-    newOutfit.dress = items.dress[Math.floor(Math.random()*items.dress.length)];
     newOutfit.shoes = items.shoes[Math.floor(Math.random()*items.shoes.length)];
 
     setRandomOutfit(newOutfit);
@@ -87,8 +85,12 @@ export default function OutfitScreen({ weather }) {
     renderOutfit = [randomOutfit.top, randomOutfit.bottoms, randomOutfit.shoes, randomOutfit.outerwear]
   }
 
-  const renderItem = ({ item }) => (
-    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+  const renderItem = ({ item }) => {
+    if (!item.category) {
+      return;
+    }
+    return (
+    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
       <Avatar.Text
         size={100}
         label={item.category}
@@ -101,7 +103,8 @@ export default function OutfitScreen({ weather }) {
         source={{uri: item.image}}
       />
     </View>
-  );
+    )
+ }
 
   return (
     <View style={{ height: '80%', width: 300 }}>
@@ -117,72 +120,10 @@ export default function OutfitScreen({ weather }) {
       { renderOutfit.length ? (
           <FlatList
             data={renderOutfit}
-            keyExtractor={(item) => item.category}
+            keyExtractor={(item) => item.id}
             renderItem={renderItem}
           />
       ) : null}
-
-
-      {/* <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-        { randomOutfit ?
-          (
-            <View style={{ display: 'flex', flexDirection: 'row' }}>
-
-              <View style={{ marginRight: 15 }}>
-              <Avatar.Text
-                size={100}
-                label="top"
-                style={{ justifyContent: 'center', marginBottom: 15, backgroundColor: '#fff' }}
-                labelStyle={{ fontSize: 20, color: '#000' }}
-              />
-              <Avatar.Text
-                size={100}
-                label="bottoms"
-                style={{ justifyContent: 'center', marginBottom: 15, backgroundColor: '#fff' }}
-                labelStyle={{ fontSize: 20, color: '#000' }}
-              />
-              <Avatar.Text
-                size={100}
-                label="shoes"
-                style={{ justifyContent: 'center', marginBottom: 15, backgroundColor: '#fff' }}
-                labelStyle={{ fontSize: 20, color: '#000' }}
-              />
-              <Avatar.Text
-                size={100}
-                label="outerwear"
-                style={{ justifyContent: 'center', marginBottom: 15, backgroundColor: '#fff' }}
-                labelStyle={{ fontSize: 20, color: '#000' }}
-              />
-              </View>
-
-              <View>
-              <Avatar.Image
-                size={100}
-                style={{ marginBottom: 15 }}
-                source={{uri: randomOutfit.top.image}}
-              />
-              <Avatar.Image
-                size={100}
-                style={{ marginBottom: 15 }}
-                source={{uri: randomOutfit.bottoms.image}}
-              />
-              <Avatar.Image
-                size={100}
-                style={{ marginBottom: 15 }}
-                source={{uri: randomOutfit.shoes.image}}
-              />
-              <Avatar.Image
-                size={100}
-                style={{ marginBottom: 15 }}
-                source={{uri: randomOutfit.outerwear.image}}
-              />
-              </View>
-
-            </View>
-          )
-          : null
-        }
-      </View> */}
 
     </View>
   )
