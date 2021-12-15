@@ -81,7 +81,7 @@ export default function WeatherScreen() {
         display: "flex",
         alignSelf: "center",
         alignItems: "center",
-        marginTop: 20,
+        marginTop: 30,
       }}
     >
       { location ?
