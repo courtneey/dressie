@@ -1,10 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, Platform, Alert } from "react-native";
+import { View, Text, Platform, Alert, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageResize from "expo-image-manipulator";
 import { uploadBytes, getDownloadURL, ref } from "firebase/storage";
 import { storage } from "../../firebase/config";
-import { Button, IconButton } from "react-native-paper";
+import {
+  Button,
+  IconButton,
+  Avatar,
+  ActivityIndicator,
+} from "react-native-paper";
 
 export default function CameraScreen() {
   const [image, setImage] = useState(null);
@@ -34,7 +39,7 @@ export default function CameraScreen() {
     let resizedImage = await ImageResize.manipulateAsync(uri, [
       {
         resize: {
-          width: 300,
+          width: 600,
         },
       },
     ]);
@@ -84,10 +89,23 @@ export default function CameraScreen() {
       <Button
         mode="contained"
         style={{ width: 150, alignSelf: "center" }}
-        onPress={() => {}}
+        onPress={async () => {
+          const selectedImage = await selectImage();
+          if (selectedImage) {
+            // retrieve image url from cloud and update local state
+            const retrievedUrl = await retrieveImage(selectedImage);
+            setImage(retrievedUrl);
+            Alert.alert("Added to wardrobe!");
+          }
+        }}
       >
         Upload
       </Button>
+      {image ? (
+        <View style={{ alignItems: "center", marginTop: 50 }}>
+          <Avatar.Image size={300} source={{ uri: image }} />
+        </View>
+      ) : null}
     </View>
   );
 }
