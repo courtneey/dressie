@@ -1,7 +1,6 @@
 import "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
 import {
   SignupScreen,
   LoginScreen,
@@ -12,7 +11,7 @@ import { Provider as PaperProvider } from "react-native-paper";
 import theme from "./src/Styles/PaperTheme";
 import { onAuthStateChanged, User } from "@firebase/auth";
 import { auth, db } from "./src/firebase/config";
-import { collection, onSnapshot, doc, getDoc, DocumentData } from "@firebase/firestore";
+import { collection, onSnapshot, DocumentData } from "@firebase/firestore";
 import { LogBox } from "react-native";
 import Loading from "./src/screens/Loading";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -21,14 +20,12 @@ import LogOut from "./Logout";
 
 LogBox.ignoreAllLogs();
 
-const Stack = createStackNavigator();
-
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
 
-  useEffect( () => {
+  useEffect(() => {
     setLoading(true);
     let userData: DocumentData[] | void;
     // listen to users collection for new users
@@ -101,26 +98,26 @@ export default function App() {
               let iconName;
 
               switch (route.name) {
-                case 'Log In':
-                  iconName = 'log-in';
+                case "Log In":
+                  iconName = "log-in";
                   break;
-                case 'Sign Up':
-                  iconName = 'clipboard';
+                case "Sign Up":
+                  iconName = "clipboard";
                   break;
-                case 'Home':
-                  iconName = 'home';
+                case "Home":
+                  iconName = "home";
                   break;
-                case 'Log Out':
-                  iconName = 'log-out';
+                case "Log Out":
+                  iconName = "log-out";
                   break;
-                case 'Weather':
-                  iconName = 'partly-sunny';
+                case "Weather":
+                  iconName = "partly-sunny";
                   break;
                 default:
-                  iconName = 'help';
+                  iconName = "help";
               }
 
-              if (!focused) iconName += '-outline';
+              if (!focused) iconName += "-outline";
 
               return <Ionicons name={iconName} size={size} color={color} />;
             },
