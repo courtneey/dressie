@@ -13,6 +13,7 @@ import {
 
 export default function CameraScreen() {
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const selectImage = async () => {
     if (Platform.OS !== "web") {
@@ -29,8 +30,10 @@ export default function CameraScreen() {
     });
 
     if (!result.cancelled) {
+      setLoading(true);
       // upload image to cloud storage
       const finalImage = await uploadImage(result.uri);
+      setLoading(false);
       return finalImage;
     }
   };
@@ -47,8 +50,10 @@ export default function CameraScreen() {
     });
 
     if (!result.cancelled) {
+      setLoading(true);
       // upload image to cloud storage
       const finalImage = await uploadImage(result.uri);
+      setLoading(false);
       return finalImage;
     }
   };
@@ -133,6 +138,7 @@ export default function CameraScreen() {
       >
         Camera
       </Button>
+      {loading ? <ActivityIndicator style={{ marginTop: 30 }} /> : null}
       {image ? (
         <View style={{ alignItems: "center", marginTop: 30 }}>
           <Avatar.Image size={260} source={{ uri: image }} />
