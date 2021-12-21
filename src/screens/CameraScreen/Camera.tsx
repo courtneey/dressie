@@ -111,8 +111,11 @@ export default function CameraScreen(props: Props) {
   };
 
   const addToWardrobe = async (uri) => {
+    const index = uri.lastIndexOf("=") + 1;
+    const fileName = uri.substring(index);
     await addDoc(collection(db, "users", `${docId}`, "wardrobe"), {
       image: uri,
+      id: fileName,
     });
   };
 
