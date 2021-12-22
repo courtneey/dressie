@@ -24,7 +24,7 @@ interface Props {
 }
 
 export default function CameraScreen(props: Props) {
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { docId } = props.route.params;
 
@@ -73,7 +73,7 @@ export default function CameraScreen(props: Props) {
     }
   };
 
-  const uploadImage = async (uri) => {
+  const uploadImage = async (uri: string) => {
     let resizedImage = await ImageResize.manipulateAsync(uri, [
       {
         resize: {
@@ -98,7 +98,7 @@ export default function CameraScreen(props: Props) {
     return resizedUri;
   };
 
-  const retrieveImage = async (uri) => {
+  const retrieveImage = async (uri: string) => {
     // extract filename from uri
     const index = uri.lastIndexOf("/") + 1;
     const fileName = uri.substring(index);
@@ -110,7 +110,7 @@ export default function CameraScreen(props: Props) {
     return retrievedUrl;
   };
 
-  const addToWardrobe = async (uri) => {
+  const addToWardrobe = async (uri: string) => {
     const index = uri.lastIndexOf("=") + 1;
     const fileName = uri.substring(index);
     await addDoc(collection(db, "users", `${docId}`, "wardrobe"), {
