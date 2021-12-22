@@ -27,7 +27,7 @@ LogBox.ignoreAllLogs();
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<DocumentData | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -65,9 +65,16 @@ export default function App() {
         <CameraStack.Screen
           name="CameraMain"
           component={CameraScreen}
-          initialParams={userData}
+          initialParams={{ userData }}
+          options={{
+            headerShown: false,
+          }}
         />
-        <CameraStack.Screen name="CameraForm" component={CameraForm} />
+        <CameraStack.Screen
+          name="CameraForm"
+          component={CameraForm}
+          // options={{ headerShown: false }}
+        />
       </CameraStack.Navigator>
     );
   };
