@@ -1,6 +1,7 @@
 import "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   SignupScreen,
   LoginScreen,
@@ -8,6 +9,7 @@ import {
   WeatherScreen,
   CameraScreen,
   WardrobeScreen,
+  CameraForm,
 } from "./src/screens";
 import { Provider as PaperProvider } from "react-native-paper";
 import theme from "./src/Styles/PaperTheme";
@@ -55,6 +57,21 @@ export default function App() {
     setLoading(false);
   }, []);
 
+  const CameraStack = createNativeStackNavigator();
+
+  const CameraStackScreen = () => {
+    return (
+      <CameraStack.Navigator>
+        <CameraStack.Screen
+          name="CameraMain"
+          component={CameraScreen}
+          initialParams={userData}
+        />
+        <CameraStack.Screen name="CameraForm" component={CameraForm} />
+      </CameraStack.Navigator>
+    );
+  };
+
   const Tab = createBottomTabNavigator();
 
   let navOptions;
@@ -75,7 +92,7 @@ export default function App() {
 
         <Tab.Screen
           name="Camera"
-          component={CameraScreen}
+          component={CameraStackScreen}
           options={{
             headerRight: () => LogOut(),
           }}

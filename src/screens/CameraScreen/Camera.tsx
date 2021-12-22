@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import { collection, addDoc, doc } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   route: {
@@ -27,6 +28,7 @@ export default function CameraScreen(props: Props) {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { docId } = props.route.params;
+  const navigation = useNavigation();
 
   const selectImage = async () => {
     if (Platform.OS !== "web") {
@@ -170,6 +172,10 @@ export default function CameraScreen(props: Props) {
           <Avatar.Image size={260} source={{ uri: image }} />
         </View>
       ) : null}
+
+      <Button onPress={() => navigation.navigate("CameraForm")}>
+        Next Screen
+      </Button>
     </View>
   );
 }
