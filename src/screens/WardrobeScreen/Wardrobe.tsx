@@ -15,8 +15,13 @@ interface Props {
   };
 }
 
+interface WardrobeItem {
+  id: string;
+  image: string;
+}
+
 export default function WardrobeScreen(props: Props) {
-  const [clothes, setClothes] = useState(null);
+  const [clothes, setClothes] = useState<WardrobeItem[] | null>(null);
   const [loading, setLoading] = useState(false);
   const { docId } = props.route.params;
   const wardrobeSubRef = collection(db, "users", docId, "wardrobe");
@@ -25,10 +30,12 @@ export default function WardrobeScreen(props: Props) {
     setLoading(true);
     // load wardrobe items
     const querySnapshot = await getDocs(wardrobeSubRef);
-    let clothesData = [];
+    let clothesData: WardrobeItem[] = [];
     querySnapshot.forEach((doc) => {
-      clothesData.push(doc.data());
+      clothesData.push(doc.data() as WardrobeItem);
     });
+
+    console.log("clothesData:", clothesData);
 
     setClothes(clothesData);
     setLoading(false);
