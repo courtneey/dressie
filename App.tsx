@@ -10,6 +10,7 @@ import {
   CameraScreen,
   WardrobeScreen,
   CameraForm,
+  CameraFormWeather,
 } from "./src/screens";
 import { Provider as PaperProvider } from "react-native-paper";
 import theme from "./src/Styles/PaperTheme";
@@ -74,6 +75,10 @@ export default function App() {
           name="CameraForm"
           component={CameraForm}
           // options={{ headerShown: false }}
+        />
+        <CameraStack.Screen
+          name="CameraFormWeather"
+          component={CameraFormWeather}
         />
       </CameraStack.Navigator>
     );

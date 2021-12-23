@@ -17,7 +17,7 @@ const weatherTagOptions = ["snow", "rain", "cloud", "sun"];
 
 const tempTagOptions = ["cold", "hot", "mild"];
 
-export default function CameraForm() {
+export default function CameraForm({ navigation }) {
   const [description, setDescription] = useState("");
   const [clothingCategory, setClothingCategory] = useState("");
   const [weatherTags, setWeatherTags] = useState([]);
@@ -67,7 +67,12 @@ export default function CameraForm() {
         rowTextStyle={styles.dropdownRowText}
       />
 
-      <Button mode="contained">Next</Button>
+      <Button
+        mode="contained"
+        onPress={() => navigation.navigate("CameraFormWeather")}
+      >
+        Next
+      </Button>
     </View>
   );
 }
