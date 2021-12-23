@@ -173,8 +173,12 @@ export default function CameraScreen(props: Props) {
         </View>
       ) : null}
 
-      <Button onPress={() => navigation.navigate("CameraForm" as any)}>
-        Next Screen
+      <Button
+        onPress={() =>
+          navigation.navigate("CameraForm", { clothingImage: image })
+        }
+      >
+        Next
       </Button>
     </View>
   );

@@ -4,6 +4,7 @@ import { Button, TextInput, RadioButton } from "react-native-paper";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { collection, addDoc, doc } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
 
 const clothingCategoryOptions = [
   "top",
@@ -13,15 +14,11 @@ const clothingCategoryOptions = [
   "outerwear",
 ];
 
-const weatherTagOptions = ["snow", "rain", "cloud", "sun"];
-
-const tempTagOptions = ["cold", "hot", "mild"];
-
-export default function CameraForm({ navigation }) {
+export default function CameraForm(props) {
   const [description, setDescription] = useState("");
   const [clothingCategory, setClothingCategory] = useState("");
-  const [weatherTags, setWeatherTags] = useState([]);
-  const [tempTags, setTempTags] = useState([]);
+  const { clothingImage } = props.route.params;
+  const navigation = useNavigation();
 
   return (
     <View
@@ -44,7 +41,7 @@ export default function CameraForm({ navigation }) {
         value={description}
         underlineColorAndroid="transparent"
         autoCapitalize="none"
-        style={{ marginBottom: 20, height: 50 }}
+        style={{ marginBottom: 20 }}
       />
       <SelectDropdown
         data={clothingCategoryOptions}
@@ -69,7 +66,13 @@ export default function CameraForm({ navigation }) {
 
       <Button
         mode="contained"
-        onPress={() => navigation.navigate("CameraFormWeather")}
+        onPress={() =>
+          navigation.navigate("CameraFormWeather", {
+            clothingCategory: clothingCategory,
+            clothingImage: clothingImage,
+            description: description,
+          })
+        }
       >
         Next
       </Button>
@@ -85,6 +88,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#707070",
     marginBottom: 20,
+    height: 50,
   },
   dropdownButtonText: { color: "#444", textAlign: "left" },
   dropdownStyle: { backgroundColor: "#EFEFEF" },
