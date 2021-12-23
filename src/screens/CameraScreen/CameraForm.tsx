@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { View, StyleSheet, Text } from "react-native";
+import { Button, TextInput, RadioButton } from "react-native-paper";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { collection, addDoc, doc } from "firebase/firestore";
@@ -32,6 +32,10 @@ export default function CameraForm() {
         alignSelf: "center",
       }}
     >
+      <Text style={{ marginBottom: 20, fontSize: 16 }}>
+        What kind of clothing item is this?
+      </Text>
+
       <TextInput
         mode="outlined"
         placeholder="Item description"
@@ -40,9 +44,8 @@ export default function CameraForm() {
         value={description}
         underlineColorAndroid="transparent"
         autoCapitalize="none"
-        style={{ marginBottom: 20 }}
+        style={{ marginBottom: 20, height: 50 }}
       />
-
       <SelectDropdown
         data={clothingCategoryOptions}
         defaultButtonText={"Select a category"}
@@ -63,6 +66,8 @@ export default function CameraForm() {
         rowStyle={styles.dropdownRow}
         rowTextStyle={styles.dropdownRowText}
       />
+
+      <Button mode="contained">Next</Button>
     </View>
   );
 }
@@ -74,6 +79,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: "#707070",
+    marginBottom: 20,
   },
   dropdownButtonText: { color: "#444", textAlign: "left" },
   dropdownStyle: { backgroundColor: "#EFEFEF" },
