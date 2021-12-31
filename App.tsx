@@ -1,6 +1,7 @@
 import "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   SignupScreen,
   LoginScreen,
@@ -8,6 +9,8 @@ import {
   WeatherScreen,
   CameraScreen,
   WardrobeScreen,
+  CameraForm,
+  CameraFormWeather,
 } from "./src/screens";
 import { Provider as PaperProvider } from "react-native-paper";
 import theme from "./src/Styles/PaperTheme";
@@ -25,7 +28,7 @@ LogBox.ignoreAllLogs();
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<DocumentData | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -55,6 +58,32 @@ export default function App() {
     setLoading(false);
   }, []);
 
+  const CameraStack = createNativeStackNavigator();
+
+  const CameraStackScreen = () => {
+    return (
+      <CameraStack.Navigator>
+        <CameraStack.Screen
+          name="CameraMain"
+          component={CameraScreen}
+          initialParams={{ userData }}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <CameraStack.Screen
+          name="CameraForm"
+          component={CameraForm}
+          // options={{ headerShown: false }}
+        />
+        <CameraStack.Screen
+          name="CameraFormWeather"
+          component={CameraFormWeather}
+        />
+      </CameraStack.Navigator>
+    );
+  };
+
   const Tab = createBottomTabNavigator();
 
   let navOptions;
@@ -75,11 +104,11 @@ export default function App() {
 
         <Tab.Screen
           name="Camera"
-          component={CameraScreen}
+          component={CameraStackScreen}
           options={{
             headerRight: () => LogOut(),
           }}
-          initialParams={userData}
+          initialParams={userData.docId}
         />
 
         <Tab.Screen
@@ -88,7 +117,7 @@ export default function App() {
           options={{
             headerRight: () => LogOut(),
           }}
-          initialParams={userData}
+          initialParams={userData.docId}
         />
 
         <Tab.Screen
