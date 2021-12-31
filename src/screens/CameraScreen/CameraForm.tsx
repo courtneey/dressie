@@ -17,7 +17,7 @@ const clothingCategoryOptions = [
 export default function CameraForm(props) {
   const [description, setDescription] = useState("");
   const [clothingCategory, setClothingCategory] = useState("");
-  const { clothingImage } = props.route.params;
+  const { imageUri, docId } = props.route.params;
   const navigation = useNavigation();
 
   return (
@@ -68,9 +68,10 @@ export default function CameraForm(props) {
         mode="contained"
         onPress={() =>
           navigation.navigate("CameraFormWeather", {
-            clothingCategory: clothingCategory,
-            clothingImage: clothingImage,
-            description: description,
+            clothingCategory,
+            imageUri,
+            description,
+            docId,
           })
         }
       >

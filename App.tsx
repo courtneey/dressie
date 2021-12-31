@@ -108,7 +108,7 @@ export default function App() {
           options={{
             headerRight: () => LogOut(),
           }}
-          initialParams={userData}
+          initialParams={userData.docId}
         />
 
         <Tab.Screen
@@ -117,7 +117,7 @@ export default function App() {
           options={{
             headerRight: () => LogOut(),
           }}
-          initialParams={userData}
+          initialParams={userData.docId}
         />
 
         <Tab.Screen

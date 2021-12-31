@@ -1,14 +1,22 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
-import { Button, TextInput, Checkbox } from "react-native-paper";
+import { View, Text, Alert } from "react-native";
+import {
+  Button,
+  TextInput,
+  Checkbox,
+  ActivityIndicator,
+} from "react-native-paper";
 import { collection, addDoc, doc } from "firebase/firestore";
+import { db } from "../../firebase/config";
 
 const weatherTagOptions = ["snow", "rain", "cloud", "sun"];
 
 const tempTagOptions = ["cold", "hot", "mild"];
 
 export default function CameraFormWeather(props) {
-  const { clothingCategory, clothingImage, description } = props.route.params;
+  const { clothingCategory, imageUri, description, docId } = props.route.params;
+  console.log("imageUri:", imageUri);
+  const [loading, setLoading] = useState(false);
   const [weatherTags, setWeatherTags] = useState<string[]>([]);
   const [tempTags, setTempTags] = useState<string[]>([]);
   const [sunChecked, setSunChecked] = useState(false);
@@ -37,6 +45,30 @@ export default function CameraFormWeather(props) {
     if (mildChecked) chosenTempTags.push("mild");
 
     setTempTags(chosenTempTags);
+  };
+
+  const addToWardrobe = async () => {
+    console.log("image uri:", imageUri);
+    try {
+      setLoading(true);
+      setAllWeatherTags();
+      setAllTempTags();
+
+      const index = imageUri.lastIndexOf("=") + 1;
+      const fileName = imageUri.substring(index);
+      await addDoc(collection(db, "users", `${docId}`, "wardrobe"), {
+        image: imageUri,
+        id: fileName,
+        tempTags,
+        weatherTags,
+        category: clothingCategory,
+        name: description,
+      });
+      setLoading(false);
+      Alert.alert("Added to wardrobe!");
+    } catch (e) {
+      console.log("There was an issue with adding to wardrobe: ", e);
+    }
   };
 
   return (
@@ -126,15 +158,19 @@ export default function CameraFormWeather(props) {
         <Text>Mild</Text>
       </View>
 
-      <Button
-        mode="contained"
-        style={{ marginTop: 40 }}
-        onPress={() => {
-          setAllWeatherTags();
-        }}
-      >
-        Next
-      </Button>
+      {loading ? (
+        <ActivityIndicator style={{ marginTop: 40 }} />
+      ) : (
+        <Button
+          mode="contained"
+          style={{ marginTop: 40 }}
+          onPress={() => {
+            addToWardrobe();
+          }}
+        >
+          Add to Wardrobe
+        </Button>
+      )}
     </View>
   );
 }

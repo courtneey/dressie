@@ -3,23 +3,24 @@ import { View, Text, Platform, Alert, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageResize from "expo-image-manipulator";
 import { uploadBytes, getDownloadURL, ref } from "firebase/storage";
-import { storage, db } from "../../firebase/config";
+import { storage } from "../../firebase/config";
 import {
   Button,
   IconButton,
   Avatar,
   ActivityIndicator,
 } from "react-native-paper";
-import { collection, addDoc, doc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   route: {
     params: {
-      name: string;
-      email: string;
-      uid: string;
-      docId: string;
+      userData: {
+        name: string;
+        email: string;
+        uid: string;
+        docId: string;
+      };
     };
   };
 }
@@ -27,8 +28,10 @@ interface Props {
 export default function CameraScreen(props: Props) {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { docId } = props.route.params;
+  const { docId } = props.route.params.userData;
   const navigation = useNavigation();
+
+  console.log("docId from camera screen:", docId);
 
   const selectImage = async () => {
     if (Platform.OS !== "web") {
@@ -112,15 +115,6 @@ export default function CameraScreen(props: Props) {
     return retrievedUrl;
   };
 
-  const addToWardrobe = async (uri: string) => {
-    const index = uri.lastIndexOf("=") + 1;
-    const fileName = uri.substring(index);
-    await addDoc(collection(db, "users", `${docId}`, "wardrobe"), {
-      image: uri,
-      id: fileName,
-    });
-  };
-
   return (
     <View
       style={{
@@ -143,8 +137,6 @@ export default function CameraScreen(props: Props) {
             // retrieve image url from cloud and update local state
             const retrievedUrl = await retrieveImage(selectedImage);
             setImage(retrievedUrl);
-            await addToWardrobe(retrievedUrl);
-            Alert.alert("Added to wardrobe!");
           }
         }}
       >
@@ -159,8 +151,6 @@ export default function CameraScreen(props: Props) {
           if (takenImage) {
             const retrievedUrl = await retrieveImage(takenImage);
             setImage(retrievedUrl);
-            await addToWardrobe(retrievedUrl);
-            Alert.alert("Added to wardrobe!");
           }
         }}
       >
@@ -175,7 +165,7 @@ export default function CameraScreen(props: Props) {
 
       <Button
         onPress={() =>
-          navigation.navigate("CameraForm", { clothingImage: image })
+          navigation.navigate("CameraForm", { imageUri: image, docId })
         }
       >
         Next
