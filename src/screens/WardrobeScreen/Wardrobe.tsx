@@ -24,13 +24,17 @@ export default function WardrobeScreen(props: Props) {
   const [clothes, setClothes] = useState<WardrobeItem[] | null>(null);
   const [loading, setLoading] = useState(false);
   const { docId } = props.route.params;
+  console.log("props:", props.route.params);
+  console.log("hi2");
+
   const wardrobeSubRef = collection(db, "users", docId, "wardrobe");
 
   const loadWardrobe = async () => {
     setLoading(true);
     // load wardrobe items
     const querySnapshot = await getDocs(wardrobeSubRef);
-    let clothesData: WardrobeItem[] = [];
+    console.log("query snapshot:", querySnapshot);
+    const clothesData: WardrobeItem[] = [];
     querySnapshot.forEach((doc) => {
       clothesData.push(doc.data() as WardrobeItem);
     });
@@ -45,7 +49,8 @@ export default function WardrobeScreen(props: Props) {
     loadWardrobe();
 
     // listen to updates to wardrobe subcollection
-    const unsub = onSnapshot(wardrobeSubRef, () => {
+    const unsub = onSnapshot(wardrobeSubRef, (bbb) => {
+      console.log(bbb);
       loadWardrobe();
     });
 

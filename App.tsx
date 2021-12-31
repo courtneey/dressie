@@ -66,7 +66,6 @@ export default function App() {
         <CameraStack.Screen
           name="CameraMain"
           component={CameraScreen}
-          initialParams={{ userData }}
           options={{
             headerShown: false,
           }}
@@ -108,7 +107,7 @@ export default function App() {
           options={{
             headerRight: () => LogOut(),
           }}
-          initialParams={userData.docId}
+          initialParams={userData}
         />
 
         <Tab.Screen
@@ -117,7 +116,7 @@ export default function App() {
           options={{
             headerRight: () => LogOut(),
           }}
-          initialParams={userData.docId}
+          initialParams={userData}
         />
 
         <Tab.Screen
