@@ -15,12 +15,10 @@ import { useNavigation } from "@react-navigation/native";
 interface Props {
   route: {
     params: {
-      userData: {
-        name: string;
-        email: string;
-        uid: string;
-        docId: string;
-      };
+      name: string;
+      email: string;
+      uid: string;
+      docId: string;
     };
   };
 }
@@ -28,7 +26,7 @@ interface Props {
 export default function CameraScreen(props: Props) {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { docId } = props.route.params.userData;
+  const { docId } = props.route.params;
   const navigation = useNavigation();
 
   const selectImage = async () => {
