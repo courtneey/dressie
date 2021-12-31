@@ -31,8 +31,6 @@ export default function CameraScreen(props: Props) {
   const { docId } = props.route.params.userData;
   const navigation = useNavigation();
 
-  console.log("docId from camera screen:", docId);
-
   const selectImage = async () => {
     if (Platform.OS !== "web") {
       const { status } =

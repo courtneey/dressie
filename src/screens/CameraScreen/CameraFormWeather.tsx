@@ -15,7 +15,6 @@ const tempTagOptions = ["cold", "hot", "mild"];
 
 export default function CameraFormWeather(props) {
   const { clothingCategory, imageUri, description, docId } = props.route.params;
-  console.log("imageUri:", imageUri);
   const [loading, setLoading] = useState(false);
   const [weatherTags, setWeatherTags] = useState<string[]>([]);
   const [tempTags, setTempTags] = useState<string[]>([]);
@@ -48,7 +47,6 @@ export default function CameraFormWeather(props) {
   };
 
   const addToWardrobe = async () => {
-    console.log("image uri:", imageUri);
     try {
       setLoading(true);
       setAllWeatherTags();
