@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 import { View, Text, Alert } from "react-native";
-import {
-  Button,
-  IconButton,
-  Checkbox,
-  ActivityIndicator,
-} from "react-native-paper";
+import { Button, ActivityIndicator } from "react-native-paper";
 import { collection, addDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 
-export default function CameraFormWeather(props) {
+interface Props {
+  route: {
+    params: {
+      clothingCategory: string;
+      imageUri: string;
+      description: string;
+      docId: string;
+    };
+  };
+}
+
+export default function CameraFormWeather(props: Props) {
   const { clothingCategory, imageUri, description, docId } = props.route.params;
   const [loading, setLoading] = useState(false);
   const [weatherTags, setWeatherTags] = useState<string[]>([]);
