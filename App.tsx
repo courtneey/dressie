@@ -66,18 +66,20 @@ export default function App() {
         <CameraStack.Screen
           name="CameraMain"
           component={CameraScreen}
-          options={{
-            headerShown: false,
-          }}
+          options={{ headerShown: false }}
+          initialParams={{ userData }}
         />
         <CameraStack.Screen
           name="CameraForm"
           component={CameraForm}
-          // options={{ headerShown: false }}
+          options={{ headerShown: false }}
+          initialParams={{ userData }}
         />
         <CameraStack.Screen
           name="CameraFormWeather"
           component={CameraFormWeather}
+          options={{ headerShown: false }}
+          initialParams={{ userData }}
         />
       </CameraStack.Navigator>
     );
@@ -107,7 +109,6 @@ export default function App() {
           options={{
             headerRight: () => LogOut(),
           }}
-          initialParams={userData}
         />
 
         <Tab.Screen

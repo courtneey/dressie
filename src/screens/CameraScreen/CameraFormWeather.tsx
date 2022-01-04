@@ -2,16 +2,14 @@ import React, { useState } from "react";
 import { View, Text, Alert } from "react-native";
 import {
   Button,
-  TextInput,
+  IconButton,
   Checkbox,
   ActivityIndicator,
 } from "react-native-paper";
 import { collection, addDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase/config";
-
-const weatherTagOptions = ["snow", "rain", "cloud", "sun"];
-
-const tempTagOptions = ["cold", "hot", "mild"];
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CameraFormWeather(props) {
   const { clothingCategory, imageUri, description, docId } = props.route.params;
@@ -25,6 +23,7 @@ export default function CameraFormWeather(props) {
   const [hotChecked, setHotChecked] = useState(false);
   const [coldChecked, setColdChecked] = useState(false);
   const [mildChecked, setMildChecked] = useState(false);
+  const navigation = useNavigation();
 
   const setAllWeatherTags = () => {
     let chosenWeatherTags = [];
@@ -63,7 +62,16 @@ export default function CameraFormWeather(props) {
         name: description,
       });
       setLoading(false);
-      Alert.alert("Added to wardrobe!");
+      Alert.alert(
+        "Success!",
+        `${description} had been added to your wardrobe.`,
+        [
+          {
+            text: "Continue",
+            onPress: () => navigation.navigate("Wardrobe"),
+          },
+        ]
+      );
     } catch (e) {
       console.log("There was an issue with adding to wardrobe: ", e);
     }
@@ -85,9 +93,12 @@ export default function CameraFormWeather(props) {
       <View
         style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >
-        <Checkbox
-          status={sunChecked ? "checked" : "unchecked"}
+        <Ionicons
+          name={sunChecked ? "sunny" : "sunny-outline"}
+          size={40}
+          style={{ marginRight: 10 }}
           onPress={() => setSunChecked(!sunChecked)}
+          color={sunChecked ? "#A5668B" : "gray"}
         />
         <Text>Sun</Text>
       </View>
@@ -95,9 +106,12 @@ export default function CameraFormWeather(props) {
       <View
         style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >
-        <Checkbox
-          status={rainChecked ? "checked" : "unchecked"}
+        <Ionicons
+          name={rainChecked ? "rainy" : "rainy-outline"}
+          size={40}
+          style={{ marginRight: 10 }}
           onPress={() => setRainChecked(!rainChecked)}
+          color={rainChecked ? "#A5668B" : "gray"}
         />
         <Text>Rain</Text>
       </View>
@@ -105,9 +119,12 @@ export default function CameraFormWeather(props) {
       <View
         style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >
-        <Checkbox
-          status={cloudChecked ? "checked" : "unchecked"}
+        <Ionicons
+          name={cloudChecked ? "cloudy" : "cloudy-outline"}
+          size={40}
+          style={{ marginRight: 10 }}
           onPress={() => setCloudChecked(!cloudChecked)}
+          color={cloudChecked ? "#A5668B" : "gray"}
         />
         <Text>Cloud</Text>
       </View>
@@ -115,9 +132,12 @@ export default function CameraFormWeather(props) {
       <View
         style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >
-        <Checkbox
-          status={snowChecked ? "checked" : "unchecked"}
+        <Ionicons
+          name={snowChecked ? "snow" : "snow-outline"}
+          size={40}
+          style={{ marginRight: 10 }}
           onPress={() => setSnowChecked(!snowChecked)}
+          color={snowChecked ? "#A5668B" : "gray"}
         />
         <Text>Snow</Text>
       </View>
@@ -129,9 +149,12 @@ export default function CameraFormWeather(props) {
       <View
         style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >
-        <Checkbox
-          status={hotChecked ? "checked" : "unchecked"}
+        <Ionicons
+          name={hotChecked ? "reorder-four" : "reorder-four-outline"}
+          size={40}
+          style={{ marginRight: 10 }}
           onPress={() => setHotChecked(!hotChecked)}
+          color={hotChecked ? "#A5668B" : "gray"}
         />
         <Text>Hot</Text>
       </View>
@@ -139,21 +162,27 @@ export default function CameraFormWeather(props) {
       <View
         style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >
-        <Checkbox
-          status={coldChecked ? "checked" : "unchecked"}
-          onPress={() => setColdChecked(!coldChecked)}
+        <Ionicons
+          name={mildChecked ? "reorder-three" : "reorder-three-outline"}
+          size={40}
+          style={{ marginRight: 10 }}
+          onPress={() => setMildChecked(!mildChecked)}
+          color={mildChecked ? "#A5668B" : "gray"}
         />
-        <Text>Cold</Text>
+        <Text>Mild</Text>
       </View>
 
       <View
         style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >
-        <Checkbox
-          status={mildChecked ? "checked" : "unchecked"}
-          onPress={() => setMildChecked(!mildChecked)}
+        <Ionicons
+          name={coldChecked ? "reorder-two" : "reorder-two-outline"}
+          size={40}
+          style={{ marginRight: 10 }}
+          onPress={() => setColdChecked(!coldChecked)}
+          color={coldChecked ? "#A5668B" : "gray"}
         />
-        <Text>Mild</Text>
+        <Text>Cold</Text>
       </View>
 
       {loading ? (
