@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { Button, TextInput, RadioButton } from "react-native-paper";
+import { Button, TextInput, Avatar } from "react-native-paper";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { collection, addDoc, doc } from "firebase/firestore";
@@ -29,6 +29,10 @@ export default function CameraForm(props) {
         alignSelf: "center",
       }}
     >
+      <View style={{ alignItems: "center", marginBottom: 20 }}>
+        <Avatar.Image size={200} source={{ uri: imageUri }} />
+      </View>
+
       <Text style={{ marginBottom: 20, fontSize: 16 }}>
         What kind of clothing item is this?
       </Text>

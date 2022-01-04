@@ -133,6 +133,7 @@ export default function CameraScreen(props: Props) {
             // retrieve image url from cloud and update local state
             const retrievedUrl = await retrieveImage(selectedImage);
             setImage(retrievedUrl);
+            navigation.navigate("CameraForm", { imageUri: image, docId });
           }
         }}
       >
@@ -147,25 +148,13 @@ export default function CameraScreen(props: Props) {
           if (takenImage) {
             const retrievedUrl = await retrieveImage(takenImage);
             setImage(retrievedUrl);
+            navigation.navigate("CameraForm", { imageUri: image, docId });
           }
         }}
       >
         Camera
       </Button>
       {loading ? <ActivityIndicator style={{ marginTop: 30 }} /> : null}
-      {image ? (
-        <View style={{ alignItems: "center", marginTop: 30 }}>
-          <Avatar.Image size={260} source={{ uri: image }} />
-        </View>
-      ) : null}
-
-      <Button
-        onPress={() =>
-          navigation.navigate("CameraForm", { imageUri: image, docId })
-        }
-      >
-        Next
-      </Button>
     </View>
   );
 }
