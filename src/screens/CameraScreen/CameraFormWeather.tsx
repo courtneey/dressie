@@ -74,7 +74,10 @@ export default function CameraFormWeather(props: Props) {
         [
           {
             text: "Continue",
-            onPress: () => navigation.navigate("Wardrobe"),
+            onPress: () => {
+              navigation.popToTop();
+              navigation.navigate("Wardrobe");
+            },
           },
         ]
       );
