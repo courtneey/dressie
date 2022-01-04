@@ -108,6 +108,7 @@ export default function CameraScreen(props: Props) {
     const imageStorageRef = ref(storage, `images/${fileName}`);
     const retrievedUrl = await getDownloadURL(imageStorageRef);
 
+    setImage(retrievedUrl);
     return retrievedUrl;
   };
 
@@ -131,9 +132,8 @@ export default function CameraScreen(props: Props) {
           const selectedImage = await selectImage();
           if (selectedImage) {
             // retrieve image url from cloud and update local state
-            const retrievedUrl = await retrieveImage(selectedImage);
-            setImage(retrievedUrl);
-            navigation.navigate("CameraForm", { imageUri: image, docId });
+            const newImage = await retrieveImage(selectedImage);
+            navigation.navigate("CameraForm", { imageUri: newImage, docId });
           }
         }}
       >
@@ -146,9 +146,8 @@ export default function CameraScreen(props: Props) {
         onPress={async () => {
           const takenImage = await useCamera();
           if (takenImage) {
-            const retrievedUrl = await retrieveImage(takenImage);
-            setImage(retrievedUrl);
-            navigation.navigate("CameraForm", { imageUri: image, docId });
+            const newImage = await retrieveImage(takenImage);
+            navigation.navigate("CameraForm", { imageUri: newImage, docId });
           }
         }}
       >
