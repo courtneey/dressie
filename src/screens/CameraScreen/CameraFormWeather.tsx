@@ -9,10 +9,7 @@ import {
 import { collection, addDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
-const weatherTagOptions = ["snow", "rain", "cloud", "sun"];
-
-const tempTagOptions = ["cold", "hot", "mild"];
+import { useNavigation } from "@react-navigation/native";
 
 export default function CameraFormWeather(props) {
   const { clothingCategory, imageUri, description, docId } = props.route.params;
@@ -26,6 +23,7 @@ export default function CameraFormWeather(props) {
   const [hotChecked, setHotChecked] = useState(false);
   const [coldChecked, setColdChecked] = useState(false);
   const [mildChecked, setMildChecked] = useState(false);
+  const navigation = useNavigation();
 
   const setAllWeatherTags = () => {
     let chosenWeatherTags = [];
@@ -64,7 +62,16 @@ export default function CameraFormWeather(props) {
         name: description,
       });
       setLoading(false);
-      Alert.alert("Added to wardrobe!");
+      Alert.alert(
+        "Success!",
+        `${description} had been added to your wardrobe.`,
+        [
+          {
+            text: "Continue",
+            onPress: () => navigation.navigate("Wardrobe"),
+          },
+        ]
+      );
     } catch (e) {
       console.log("There was an issue with adding to wardrobe: ", e);
     }
