@@ -19,7 +19,16 @@ const clothingCategoryOptions = [
   "outerwear",
 ];
 
-export default function CameraForm(props) {
+interface Props {
+  route: {
+    params: {
+      imageUri: string;
+      docId: string;
+    };
+  };
+}
+
+export default function CameraForm(props: Props) {
   const [description, setDescription] = useState("");
   const [clothingCategory, setClothingCategory] = useState("");
   const { imageUri, docId } = props.route.params;
@@ -52,6 +61,7 @@ export default function CameraForm(props) {
           underlineColorAndroid="transparent"
           autoCapitalize="none"
           style={{ marginBottom: 20 }}
+          autoComplete={"off"}
         />
 
         <SelectDropdown
@@ -70,7 +80,7 @@ export default function CameraForm(props) {
             );
           }}
           dropdownIconPosition={"right"}
-          dropDownStyle={styles.dropdownStyle}
+          dropdownStyle={styles.dropdownStyle}
           rowStyle={styles.dropdownRow}
           rowTextStyle={styles.dropdownRowText}
         />
