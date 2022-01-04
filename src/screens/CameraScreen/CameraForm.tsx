@@ -9,7 +9,6 @@ import {
 import { Button, TextInput, Avatar } from "react-native-paper";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { collection, addDoc, doc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 
 const clothingCategoryOptions = [

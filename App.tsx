@@ -66,9 +66,7 @@ export default function App() {
         <CameraStack.Screen
           name="CameraMain"
           component={CameraScreen}
-          options={{
-            headerShown: false,
-          }}
+          options={{ headerShown: false }}
           initialParams={{ userData }}
         />
         <CameraStack.Screen
@@ -80,6 +78,7 @@ export default function App() {
         <CameraStack.Screen
           name="CameraFormWeather"
           component={CameraFormWeather}
+          options={{ headerShown: false }}
           initialParams={{ userData }}
         />
       </CameraStack.Navigator>
