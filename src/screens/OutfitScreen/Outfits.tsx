@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, FlatList } from "react-native";
 import { db } from "../../firebase/config";
 import { collection, getDocs, query, where } from "@firebase/firestore";
 import { Avatar, Button } from "react-native-paper";
 import { Weather } from "../WeatherScreen/Weather";
+import { UserContext } from "../../../App";
 
 enum Category {
   top = "top",
@@ -53,12 +54,13 @@ export default function OutfitScreen({ weather }: { weather: Weather }) {
   const [categorizedItems, setCategorizedItems] =
     useState<CategorizedItems | null>(null);
   const [randomOutfit, setRandomOutfit] = useState<RealOutfit | null>(null);
+  const user = useContext(UserContext);
+  console.log("user:", user);
 
   const getOutfits = async () => {
-    // search clothing collection for documents containing the applicable tempTag
-
     let tempOutfits: ClothingItem[] = [];
 
+    // search clothing collection for documents containing the applicable tempTag
     const clothingCollRef = collection(db, "clothing");
     const q = query(
       clothingCollRef,
@@ -68,6 +70,8 @@ export default function OutfitScreen({ weather }: { weather: Weather }) {
     querySnapshot.forEach((doc) => {
       tempOutfits.push(doc.data() as ClothingItem);
     });
+
+    // search user's wardrobe subcollection for applicable items
 
     setOutfits(tempOutfits);
   };

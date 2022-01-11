@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
@@ -24,6 +24,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import LogOut from "./Logout";
 
 LogBox.ignoreAllLogs();
+
+let UserContext;
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -57,6 +59,8 @@ export default function App() {
     });
     setLoading(false);
   }, []);
+
+  UserContext = createContext(userData);
 
   const CameraStack = createNativeStackNavigator();
 
@@ -138,53 +142,57 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <PaperProvider theme={theme}>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
+      <UserContext.Provider value={userData}>
+        <PaperProvider theme={theme}>
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
 
-              switch (route.name) {
-                case "Log In":
-                  iconName = "log-in";
-                  break;
-                case "Sign Up":
-                  iconName = "clipboard";
-                  break;
-                case "Home":
-                  iconName = "home";
-                  break;
-                case "Log Out":
-                  iconName = "log-out";
-                  break;
-                case "Weather":
-                  iconName = "partly-sunny";
-                  break;
-                case "Camera":
-                  iconName = "camera";
-                  break;
-                case "Wardrobe":
-                  iconName = "shirt";
-                  break;
-                default:
-                  iconName = "help";
-              }
+                switch (route.name) {
+                  case "Log In":
+                    iconName = "log-in";
+                    break;
+                  case "Sign Up":
+                    iconName = "clipboard";
+                    break;
+                  case "Home":
+                    iconName = "home";
+                    break;
+                  case "Log Out":
+                    iconName = "log-out";
+                    break;
+                  case "Weather":
+                    iconName = "partly-sunny";
+                    break;
+                  case "Camera":
+                    iconName = "camera";
+                    break;
+                  case "Wardrobe":
+                    iconName = "shirt";
+                    break;
+                  default:
+                    iconName = "help";
+                }
 
-              if (!focused) iconName += "-outline";
+                if (!focused) iconName += "-outline";
 
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-            tabBarActiveTintColor: "#A5668B",
-            tabBarInactiveTintColor: "gray",
-            headerTitleAlign: "left",
-            headerTitleStyle: {
-              fontSize: 18,
-            },
-          })}
-        >
-          {navOptions}
-        </Tab.Navigator>
-      </PaperProvider>
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+              tabBarActiveTintColor: "#A5668B",
+              tabBarInactiveTintColor: "gray",
+              headerTitleAlign: "left",
+              headerTitleStyle: {
+                fontSize: 18,
+              },
+            })}
+          >
+            {navOptions}
+          </Tab.Navigator>
+        </PaperProvider>
+      </UserContext.Provider>
     </NavigationContainer>
   );
 }
+
+export { UserContext };
