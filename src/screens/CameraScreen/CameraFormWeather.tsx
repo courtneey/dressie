@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Alert } from "react-native";
 import { Button, ActivityIndicator } from "react-native-paper";
 import { collection, addDoc, doc } from "firebase/firestore";
@@ -57,20 +57,22 @@ export default function CameraFormWeather(props: Props) {
       setAllWeatherTags();
       setAllTempTags();
 
+      console.log("temptags in add to wardrobe function:", tempTags);
+
       const index = imageUri.lastIndexOf("=") + 1;
       const fileName = imageUri.substring(index);
       await addDoc(collection(db, "users", `${docId}`, "wardrobe"), {
         image: imageUri,
         id: fileName,
-        tempTags,
-        weatherTags,
+        tempTags: tempTags,
+        weatherTags: weatherTags,
         category: clothingCategory,
         name: description,
       });
       setLoading(false);
       Alert.alert(
         "Success!",
-        `${description} had been added to your wardrobe.`,
+        `${description} has been added to your wardrobe.`,
         [
           {
             text: "Continue",
