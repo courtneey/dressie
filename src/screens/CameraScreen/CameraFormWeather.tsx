@@ -29,6 +29,7 @@ export default function CameraFormWeather(props: Props) {
   const [hotChecked, setHotChecked] = useState(false);
   const [coldChecked, setColdChecked] = useState(false);
   const [mildChecked, setMildChecked] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const navigation = useNavigation();
 
   const setAllWeatherTags = () => {
@@ -51,14 +52,15 @@ export default function CameraFormWeather(props: Props) {
     setTempTags(chosenTempTags);
   };
 
+  useEffect(() => {
+    if (submitted) {
+      addToWardrobe();
+    }
+  }, [submitted]);
+
   const addToWardrobe = async () => {
     try {
       setLoading(true);
-      setAllWeatherTags();
-      setAllTempTags();
-
-      console.log("temptags in add to wardrobe function:", tempTags);
-
       const index = imageUri.lastIndexOf("=") + 1;
       const fileName = imageUri.substring(index);
       await addDoc(collection(db, "users", `${docId}`, "wardrobe"), {
@@ -203,7 +205,9 @@ export default function CameraFormWeather(props: Props) {
           mode="contained"
           style={{ marginTop: 40 }}
           onPress={() => {
-            addToWardrobe();
+            setAllTempTags();
+            setAllWeatherTags();
+            setSubmitted(true);
           }}
         >
           Add to Wardrobe
