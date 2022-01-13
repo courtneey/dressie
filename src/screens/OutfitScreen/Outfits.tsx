@@ -54,8 +54,7 @@ export default function OutfitScreen({ weather }: { weather: Weather }) {
   const [categorizedItems, setCategorizedItems] =
     useState<CategorizedItems | null>(null);
   const [randomOutfit, setRandomOutfit] = useState<RealOutfit | null>(null);
-  const user = useContext(UserContext);
-  console.log("user:", user);
+  const { docId } = useContext(UserContext);
 
   const getOutfits = async () => {
     let tempOutfits: ClothingItem[] = [];
@@ -72,6 +71,15 @@ export default function OutfitScreen({ weather }: { weather: Weather }) {
     });
 
     // search user's wardrobe subcollection for applicable items
+    const wardrobeSubRef = collection(db, "users", `${docId}`, "wardrobe");
+    const wardrobeQuery = query(
+      wardrobeSubRef,
+      where("tempTags", "array-contains", `${tempType}`)
+    );
+    const wardrobeQuerySnapshot = await getDocs(wardrobeQuery);
+    wardrobeQuerySnapshot.forEach((doc) =>
+      tempOutfits.push(doc.data() as ClothingItem)
+    );
 
     setOutfits(tempOutfits);
   };
