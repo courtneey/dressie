@@ -25,16 +25,25 @@ import LogOut from "./Logout";
 
 LogBox.ignoreAllLogs();
 
-let UserContext;
+interface UserDocData {
+  docId: string;
+  email: string;
+  name: string;
+  uid: string;
+  Provider: any;
+  Consumer: any;
+}
+
+let UserContext: UserDocData;
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState<DocumentData | null>(null);
+  const [userData, setUserData] = useState<UserDocData | null>(null);
 
   useEffect(() => {
     setLoading(true);
-    let userData: DocumentData[] | void;
+    let userData: DocumentData[];
     // listen to users collection for new users
     onSnapshot(collection(db, "users"), (snapshot) => {
       userData = snapshot.docs.map((doc) => doc.data());
@@ -45,7 +54,7 @@ export default function App() {
           // if the user is signed in, find their doc
           const correctUser = userData!.find(
             (doc) => doc.uid === currentUser.uid
-          );
+          ) as UserDocData;
 
           // if the user is found, set their data in local state
           if (correctUser) {
@@ -60,7 +69,7 @@ export default function App() {
     setLoading(false);
   }, []);
 
-  UserContext = createContext(userData);
+  UserContext = createContext(userData as UserDocData);
 
   const CameraStack = createNativeStackNavigator();
 
