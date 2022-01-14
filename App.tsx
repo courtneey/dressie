@@ -30,29 +30,27 @@ interface UserDocData {
   email: string;
   name: string;
   uid: string;
-  Provider: any;
-  Consumer: any;
 }
 
-let UserContext: UserDocData;
+export const UserContext = createContext<UserDocData | undefined>(undefined);
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState<UserDocData | null>(null);
+  const [userData, setUserData] = useState<UserDocData | undefined>(undefined);
 
   useEffect(() => {
     setLoading(true);
-    let userData: DocumentData[];
+    let docData: DocumentData[];
     // listen to users collection for new users
     onSnapshot(collection(db, "users"), (snapshot) => {
-      userData = snapshot.docs.map((doc) => doc.data());
+      docData = snapshot.docs.map((doc) => doc.data());
 
       // listen to sign-in state
       onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
           // if the user is signed in, find their doc
-          const correctUser = userData!.find(
+          const correctUser = docData!.find(
             (doc) => doc.uid === currentUser.uid
           ) as UserDocData;
 
@@ -68,8 +66,6 @@ export default function App() {
     });
     setLoading(false);
   }, []);
-
-  UserContext = createContext(userData as UserDocData);
 
   const CameraStack = createNativeStackNavigator();
 
@@ -203,5 +199,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-export { UserContext };

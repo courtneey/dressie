@@ -54,7 +54,7 @@ export default function OutfitScreen({ weather }: { weather: Weather }) {
   const [categorizedItems, setCategorizedItems] =
     useState<CategorizedItems | null>(null);
   const [randomOutfit, setRandomOutfit] = useState<RealOutfit | null>(null);
-  const { docId } = useContext(UserContext);
+  const { docId } = useContext(UserContext)!;
 
   const getOutfits = async () => {
     let tempOutfits: ClothingItem[] = [];
